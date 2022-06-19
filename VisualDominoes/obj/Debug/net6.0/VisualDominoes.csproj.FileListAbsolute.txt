@@ -1,0 +1,15 @@
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/bin/Debug/net6.0/VisualDominoes
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/bin/Debug/net6.0/VisualDominoes.deps.json
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/bin/Debug/net6.0/VisualDominoes.runtimeconfig.json
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/bin/Debug/net6.0/VisualDominoes.dll
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/bin/Debug/net6.0/VisualDominoes.pdb
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.csproj.AssemblyReference.cache
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.GeneratedMSBuildEditorConfig.editorconfig
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.AssemblyInfoInputs.cache
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.AssemblyInfo.cs
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.csproj.CoreCompileInputs.cache
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.dll
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/refint/VisualDominoes.dll
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.pdb
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/VisualDominoes.genruntimeconfig.cache
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/Debug/net6.0/ref/VisualDominoes.dll
