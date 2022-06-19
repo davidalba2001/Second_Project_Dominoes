@@ -7,13 +7,14 @@ namespace DominoEngine
 {
     public abstract class Player<TValue> where TValue : IEquatable<TValue>
     {
-        public int playerOrder { get; protected set; }
+        public int PlayerOrder { get; protected set; }
+        public bool step =  false;
         public string Name { get; protected set; }
         protected List<Chip<TValue>> HandChip;
         public int NumChips {get{return HandChip.Count;}}
         protected Player(int playerOrder, string name)
         {
-            this.playerOrder = playerOrder;
+            this.PlayerOrder = playerOrder;
             Name = name;    
             HandChip = new List<Chip<TValue>>();
         }
@@ -49,7 +50,18 @@ namespace DominoEngine
             this.HandChip.RemoveAt(pos);
             return chip;
         }
-
-
+         
+        public List<Chip<TValue>> CanPlay(TValue value)
+        {
+            List<Chip<TValue>> chips  = new List<Chip<TValue>>();
+            foreach (var chip in HandChip)
+            {
+                if(chip.LinkL.Equals(value)||chip.LinkR.Equals(value))
+                {
+                    chips.Add(chip);
+                }
+            }
+            return chips;
+        }
     }
 }
