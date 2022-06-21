@@ -42,5 +42,17 @@ namespace DominoEngine
             }
             else return false;
         }
+        public List<Chip<Number>> GetFichas()
+        {
+            List<Chip<Number>> Chips = new List<Chip<Number>>();
+            for(int i = 0; i<10; i++)
+            {
+                for(int j=1; j<10; j++)
+                {
+                    Chips.Add(new Chip<Number>(new Number(i),new Number(j)));
+                }
+            }
+            return Chips;
+        }
     }
 }

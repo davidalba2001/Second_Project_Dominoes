@@ -18,8 +18,10 @@ namespace DominoEngine
             Name = name;    
             HandChip = new List<Chip<TValue>>();
         }
+        public abstract void TakeHandChip(List<Chip<TValue>> HandChip);
+        
     }
-
+    
     public class HumanPlayer<TValue> : Player<TValue> where TValue : IEquatable<TValue>
     {
         public HumanPlayer(int playerOrder, string name) : base(playerOrder, name){}
@@ -28,7 +30,7 @@ namespace DominoEngine
         /// Take the hand chip
         /// </summary>
         
-        public void TakeHandChip(List<Chip<TValue>> HandChip)
+        override public void TakeHandChip(List<Chip<TValue>> HandChip)
         {
             this.HandChip = HandChip;
         }
