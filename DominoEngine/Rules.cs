@@ -22,17 +22,17 @@ namespace DominoEngine
         {
             return turn % NumPlayers == playerOrder;
         }
-        public bool IsFinal(List<Player<TValue>> players, out Player<TValue> player)
+        public bool IsFinal(List<Player<TValue>> players)
         {
-            WinCondition playAllChips = new WinCondition(WinConditions<TValue>.PlayAllChips);
             LockConditions locked = new LockConditions(EndConditions<TValue>.IsLocked);
-            return playAllChips(players, out player) || locked(players);
+            return locked(players);
         }
 
         public bool IsWinner(List<Player<TValue>> players, out Player<TValue> player)
         {
+            WinCondition playAllChips = new WinCondition(WinConditions<TValue>.PlayAllChips);
             WinCondition winForChips  = new WinCondition(WinConditions<TValue>.WinnerForChips);
-            if (IsFinal(players, out player))
+            if (playAllChips(players,out player)||IsFinal(players))
             {
                 if(player != null) return true;
                 else
