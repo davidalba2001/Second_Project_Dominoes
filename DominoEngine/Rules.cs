@@ -12,7 +12,7 @@ namespace DominoEngine
         private delegate bool WinCondition(List<Player<TValue>> players, out Player<TValue> player);
         private delegate bool LockConditions(List<Player<TValue>> players);
 
-        public int NumPlayers { get; }
+        public int NumPlayers { get; private set;}
         public int NumChips { get; }
         public bool PlayIsValid(Chip<TValue> chip, TValue value)
         {
@@ -53,6 +53,10 @@ namespace DominoEngine
                 }
             }
             return Chips;
+        }
+        public void SetNumPlayers(int N)
+        {
+            this.NumPlayers = N;
         }
     }
 }
