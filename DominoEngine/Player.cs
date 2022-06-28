@@ -18,8 +18,12 @@ namespace DominoEngine
             Name = name;    
             HandChip = new List<Chip<TValue>>();
         }
+        public abstract void TakeHandChip(List<Chip<TValue>> HandChip);
+        public abstract (Chip<TValue>, string)? Play(LinkedList<TValue> board, Rules<TValue> Rules);
+        public abstract List<Chip<TValue>> GetHand();
+        
     }
-
+    
     public class HumanPlayer<TValue> : Player<TValue> where TValue : IEquatable<TValue>
     {
         public HumanPlayer(int playerOrder, string name) : base(playerOrder, name){}
@@ -28,9 +32,13 @@ namespace DominoEngine
         /// Take the hand chip
         /// </summary>
         
-        public void TakeHandChip(List<Chip<TValue>> HandChip)
+        override public void TakeHandChip(List<Chip<TValue>> HandChip)
         {
             this.HandChip = HandChip;
+        }
+        override public List<Chip<TValue>> GetHand()
+        {
+            return this.HandChip;
         }
 
         /// <summary>
@@ -51,17 +59,53 @@ namespace DominoEngine
             return chip;
         }
          
-        public List<Chip<TValue>> CanPlay(TValue value)
+        public List<Chip<TValue>> CanPlay(TValue value, Rules<TValue> Rules)
         {
             List<Chip<TValue>> chips  = new List<Chip<TValue>>();
             foreach (var chip in HandChip)
             {
-                if(chip.LinkL.Equals(value)||chip.LinkR.Equals(value))
+                if(Rules.PlayIsValid(chip,value))
                 {
                     chips.Add(chip);
                 }
             }
             return chips;
+        }
+
+        public override (Chip<TValue>, string)? Play(LinkedList<TValue> board, Rules<TValue> Rules)
+        {   
+            string? Side;
+            int pos = 0;
+            Chip<TValue> Muve = this.HandChip[0];
+            if(board.Count!=0){
+                var MuvesInRigth = CanPlay(board.Last.Value, Rules);
+                var MuvesInLeft = CanPlay(board.First.Value, Rules);
+                if(MuvesInLeft.Count==0 && MuvesInRigth.Count == 0)
+                {
+                    this.step = true;
+                    return null;
+                }
+                else this.step = false; 
+                do{
+                    System.Console.WriteLine("Chouse a number between 0 and "+ this.HandChip.Count+"dependig of the position of the chip you wanna play");
+                    pos = int.Parse(Console.ReadLine());
+                    Muve = GetChipInPos(pos);
+                }while(!Rules.PlayIsValid(Muve, board.Last.Value)&&!Rules.PlayIsValid(Muve,board.First.Value));
+                Muve = PlayChip(pos);
+                if(!Rules.PlayIsValid(Muve, board.Last.Value)) return (Muve, "l");
+                if(!Rules.PlayIsValid(Muve, board.First.Value)) return (Muve, "r");
+            }
+            else
+            {
+                pos = int.Parse(Console.ReadLine());
+                Muve = PlayChip(pos);
+            }
+            do 
+            {   
+                System.Console.WriteLine("Write <l> if you wanna paly in the Left side or <r> in the Rigth side");
+                Side = Console.ReadLine();
+            }while(Side != "l" && Side != "r");
+            return (Muve,Side);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace DominoEngine
        {
             return BoardChips;
        }
-       public void AddChip(Chip<TValue> chip, TValue value)
+       public void AddChip(Chip<TValue> chip, TValue? value)
        {
             if(BoardChips.Count == 0)
             {
@@ -34,7 +34,7 @@ namespace DominoEngine
                 BoardChips.AddLast(chip.LinkR);
                 BoardChips.AddLast(chip.LinkL);
             }
-            else if(BoardChips.First.Value.Equals(chip.LinkL))
+            else if(BoardChips.Last.Value.Equals(chip.LinkL))
             {
                 BoardChips.AddLast(chip.LinkL);
                 BoardChips.AddLast(chip.LinkR);
