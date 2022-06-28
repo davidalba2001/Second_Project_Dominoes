@@ -12,7 +12,7 @@ namespace DominoEngine
             this.number = number;
         }
 
-        int number{get;}
+        public int number{get;}
 
         public bool Equals(Number? other)
         {
