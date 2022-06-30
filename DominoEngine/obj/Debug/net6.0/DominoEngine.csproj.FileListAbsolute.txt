@@ -1,0 +1,12 @@
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/bin/Debug/net6.0/DominoEngine.deps.json
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/bin/Debug/net6.0/DominoEngine.dll
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/bin/Debug/net6.0/DominoEngine.pdb
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/DominoEngine.csproj.AssemblyReference.cache
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/DominoEngine.GeneratedMSBuildEditorConfig.editorconfig
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/DominoEngine.AssemblyInfoInputs.cache
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/DominoEngine.AssemblyInfo.cs
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/DominoEngine.csproj.CoreCompileInputs.cache
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/DominoEngine.dll
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/refint/DominoEngine.dll
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/DominoEngine.pdb
+/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/obj/Debug/net6.0/ref/DominoEngine.dll
