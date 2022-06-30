@@ -5,18 +5,38 @@ using System.Threading.Tasks;
 
 namespace DominoEngine
 {
-    public class Number : IEquatable<Number>
+    public interface IValue<T> : IEquatable<T>
     {
-        public Number(int number)
+        public T value { get; }
+    }
+    public class Number<T> : IValue<T>
+    {
+        private T item;
+        public Number(T value)
         {
-            this.number = number;
+            this.item = value;
         }
+        public T value => item;
 
-        public int number{get;}
-
-        public bool Equals(Number? other)
+        public bool Equals(T other)
         {
-            if(this.number==other.number) return true;
+             if (this.value.Equals(other)) return true;
+            else return false;
+        }
+    }
+
+    public class Number2<T> : IValue<T>
+    {
+        private T item;
+        public Number2(T value)
+        {
+            this.item = value;
+        }
+        public T value => item;
+
+        public bool Equals(T other)
+        {
+             if (this.value.Equals(other)) return true;
             else return false;
         }
     }
