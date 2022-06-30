@@ -5,107 +5,78 @@ using System.Threading.Tasks;
 
 namespace DominoEngine
 {
-    public abstract class Player<TValue> where TValue : IEquatable<TValue>
+    public abstract class Player<T>
     {
+        protected delegate (Chip<T>, IValue<T>? value)? Strategy(Player<T> player, Board<T> board, Rules<T> rules,out bool canPlay);
         public int PlayerOrder { get; protected set; }
-        public bool step =  false;
+        public bool step = false;
         public string Name { get; protected set; }
-        protected List<Chip<TValue>> HandChip;
-        public int NumChips {get{return HandChip.Count;}}
+        protected List<Chip<T>> HandChip;
+        public int NumChips { get { return HandChip.Count; } }
         protected Player(int playerOrder, string name)
         {
             this.PlayerOrder = playerOrder;
-            Name = name;    
-            HandChip = new List<Chip<TValue>>();
+            Name = name;
+            HandChip = new List<Chip<T>>();
         }
-        public abstract void TakeHandChip(List<Chip<TValue>> HandChip);
-        public abstract (Chip<TValue>, string)? Play(LinkedList<TValue> board, Rules<TValue> Rules);
-        public abstract List<Chip<TValue>> GetHand();
-        
+        public abstract void TakeHandChip(List<Chip<T>> HandChip);
+        public abstract (Chip<T>, IValue<T>? value)? NextPlay(Player<T> player, Board<T> board, Rules<T> rules,out bool canPlay);
+        public abstract List<Chip<T>> GetHand();
+        public abstract Chip<T> GetChipInPos(int pos);
+        public abstract void PlayChip(Chip<T> chip);
+        public abstract bool CanPlay(Board<T> board, Rules<T> Rules);
+        public abstract List<Chip<T>> GetValidPlay(IValue<T> value, Rules<T> rules);
     }
-    
-    public class HumanPlayer<TValue> : Player<TValue> where TValue : IEquatable<TValue>
+    public class HumanPlayer<T> : Player<T>
     {
-        public HumanPlayer(int playerOrder, string name) : base(playerOrder, name){}
-        
-        /// <summary>
-        /// Take the hand chip
-        /// </summary>
-        
-        override public void TakeHandChip(List<Chip<TValue>> HandChip)
+        public HumanPlayer(int playerOrder, string name) : base(playerOrder, name) { }
+        public override void TakeHandChip(List<Chip<T>> HandChip)
         {
             this.HandChip = HandChip;
         }
-        override public List<Chip<TValue>> GetHand()
+        public override List<Chip<T>> GetHand()
         {
             return this.HandChip;
         }
-
-        /// <summary>
-        /// return a chip in the chosen posision
-        /// </summary>
-        public Chip<TValue> GetChipInPos(int pos)
+        public override Chip<T> GetChipInPos(int pos)
         {
-            return this.HandChip[pos];
+            return HandChip[pos];
         }
-
-        /// <summary>
-        /// return a chip in the chosen posision and remove it from the hand
-        /// </summary>
-        public Chip<TValue> PlayChip(int pos)
+        public override void PlayChip(Chip<T> chip)
         {
-            Chip<TValue> chip = this.HandChip[pos];
-            this.HandChip.RemoveAt(pos);
-            return chip;
+            HandChip.Remove(chip);
         }
-         
-        public List<Chip<TValue>> CanPlay(TValue value, Rules<TValue> Rules)
+        
+        public override bool CanPlay(Board<T> board,Rules<T> rules)
         {
-            List<Chip<TValue>> chips  = new List<Chip<TValue>>();
             foreach (var chip in HandChip)
             {
-                if(Rules.PlayIsValid(chip,value))
+                if (rules.PlayIsValid(chip,board.GetLinkL())||rules.PlayIsValid(chip,board.GetLinkR()))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public override List<Chip<T>> GetValidPlay(IValue<T> value, Rules<T> rules)
+        {
+            List<Chip<T>> chips = new List<Chip<T>>();
+            foreach (var chip in HandChip)
+            {
+                if (rules.PlayIsValid(chip, value))
                 {
                     chips.Add(chip);
                 }
             }
             return chips;
         }
-
-        public override (Chip<TValue>, string)? Play(LinkedList<TValue> board, Rules<TValue> Rules)
-        {   
-            string? Side;
-            int pos = 0;
-            Chip<TValue> Muve = this.HandChip[0];
-            if(board.Count!=0){
-                var MuvesInRigth = CanPlay(board.Last.Value, Rules);
-                var MuvesInLeft = CanPlay(board.First.Value, Rules);
-                if(MuvesInLeft.Count==0 && MuvesInRigth.Count == 0)
-                {
-                    this.step = true;
-                    return null;
-                }
-                else this.step = false; 
-                do{
-                    System.Console.WriteLine("Chouse a number between 0 and "+ this.HandChip.Count+"dependig of the position of the chip you wanna play");
-                    pos = int.Parse(Console.ReadLine());
-                    Muve = GetChipInPos(pos);
-                }while(!Rules.PlayIsValid(Muve, board.Last.Value)&&!Rules.PlayIsValid(Muve,board.First.Value));
-                Muve = PlayChip(pos);
-                if(!Rules.PlayIsValid(Muve, board.Last.Value)) return (Muve, "l");
-                if(!Rules.PlayIsValid(Muve, board.First.Value)) return (Muve, "r");
-            }
-            else
-            {
-                pos = int.Parse(Console.ReadLine());
-                Muve = PlayChip(pos);
-            }
-            do 
-            {   
-                System.Console.WriteLine("Write <l> if you wanna paly in the Left side or <r> in the Rigth side");
-                Side = Console.ReadLine();
-            }while(Side != "l" && Side != "r");
-            return (Muve,Side);
+        public override (Chip<T>,IValue<T>? value)? NextPlay(Player<T> player, Board<T> board, Rules<T> rules,out bool canPlay)
+        {
+            Strategy playStrategy = new Strategy(Strategies<T>.Play);
+            var chip = playStrategy(player, board, rules,out canPlay);
+            if (chip == null) return null;
+            else PlayChip(chip.Value.Item1);
+            return chip;
         }
     }
 }
