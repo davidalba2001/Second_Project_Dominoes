@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DominoEngine
 {
-    public static class EndConditions<TValue> where TValue:IEquatable<TValue>
+    public static class EndConditions<T>
     {
-        public static bool IsLocked(List<Player<TValue>> players)
+        public static bool IsLocked(List<Player<T>> players)
         {
             foreach (var item in players)
             {
