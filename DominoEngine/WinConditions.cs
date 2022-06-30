@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace DominoEngine
 {
-    public class WinConditions<TValue> where TValue:IEquatable<TValue>
+    public class WinConditions<IValue>
     {
-        public static bool PlayAllChips(List<Player<TValue>> players ,out Player<TValue> winner)
+        public static bool PlayAllChips(List<Player<IValue>> players ,out Player<IValue>? winner)
         {
             foreach (var item in players)
             {
@@ -20,16 +20,9 @@ namespace DominoEngine
             winner = null;
             return false;
         }
-        //public static bool WinnerScore(List<Player<TValue>> players,out Player<TValue> winner)
-        //{
-        //    foreach (var item in player)
-        //    {
-        //        
-        //    }
-        //}
-        public static bool WinnerForChips(List<Player<TValue>> players,out Player<TValue> winner)
+        public static bool WinnerForChips(List<Player<IValue>> players,out Player<IValue>? winner)
         {
-            Player<TValue> temp = players[0];
+            Player<IValue> temp = players[0];
             int minChips = players[0].NumChips;
             bool flag = false;
 
@@ -50,6 +43,5 @@ namespace DominoEngine
             winner = null;
             return false; 
         }
-
     }
 }
