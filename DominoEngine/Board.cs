@@ -5,41 +5,60 @@ using System.Threading.Tasks;
 
 namespace DominoEngine
 {
-    public class Board<TValue> where TValue :IEquatable<TValue>
+    public class Board<T>
     {
-       private LinkedList<TValue> BoardChips = new LinkedList<TValue>();
-       public LinkedList<TValue> GetBoard()
-       {
+        private LinkedList<IValue<T>> BoardChips = new LinkedList<IValue<T>>();
+        public LinkedList<IValue<T>> GetBoard()
+        {
             return BoardChips;
-       }
-       public void AddChip(Chip<TValue> chip, TValue? value)
-       {
-            if(BoardChips.Count == 0)
+        }
+
+        public int CountChip => BoardChips.Count;
+        public IValue<T> GetLinkR()
+        {
+            return BoardChips.LastOrDefault();
+        }
+        public IValue<T> GetLinkL()
+        {
+            return BoardChips.FirstOrDefault();
+        }
+        public void AddChip((Chip<T>, IValue<T>?)? chip)
+        {
+            if (CountChip == 0)
             {
-                BoardChips.AddLast(chip.LinkL);
-                BoardChips.AddLast(chip.LinkR);
+                BoardChips.AddLast(chip!.Value.Item1.LinkL);
+                BoardChips.AddLast(chip!.Value.Item1.LinkR);
             }
-            else if(BoardChips.First!.Value.Equals(chip.LinkR))
+            else
             {
-                BoardChips.AddFirst(chip.LinkR);
-                BoardChips.AddFirst(chip.LinkL);
+                if (chip.Value.Item2.Equals(GetLinkR()))
+                {
+                    if (chip!.Value.Item1.LinkL!.Equals(GetLinkR()))
+                    {
+                        BoardChips.AddLast(chip!.Value.Item1.LinkL);
+                        BoardChips.AddLast(chip!.Value.Item1.LinkR);
+                    }
+                    else if (chip!.Value.Item1.LinkR!.Equals(GetLinkR()))
+                    {
+                        BoardChips.AddLast(chip!.Value.Item1.LinkR);
+                        BoardChips.AddLast(chip!.Value.Item1.LinkL);
+                    }
+                }
+                else if (chip.Value.Item2.Equals(GetLinkL()))
+                {
+                    if (chip!.Value.Item1.LinkL!.Equals(GetLinkL()))
+                    {
+                        BoardChips.AddFirst(chip!.Value.Item1.LinkL);
+                        BoardChips.AddFirst(chip!.Value.Item1.LinkR);
+                    }
+                    else if (chip!.Value.Item1.LinkR!.Equals(GetLinkL()))
+                    {
+                        BoardChips.AddFirst(chip!.Value.Item1.LinkR);
+                        BoardChips.AddFirst(chip!.Value.Item1.LinkL);
+                    }
+                }
+
             }
-            else if(BoardChips.First.Value.Equals(chip.LinkL))
-            {
-                BoardChips.AddFirst(chip.LinkL);
-                BoardChips.AddFirst(chip.LinkR);
-            }
-            else if(BoardChips.Last!.Value.Equals(chip.LinkR))
-            {
-                BoardChips.AddLast(chip.LinkR);
-                BoardChips.AddLast(chip.LinkL);
-            }
-            else if(BoardChips.Last.Value.Equals(chip.LinkL))
-            {
-                BoardChips.AddLast(chip.LinkL);
-                BoardChips.AddLast(chip.LinkR);
-            }
-       }
-        
+        }
     }
 }
