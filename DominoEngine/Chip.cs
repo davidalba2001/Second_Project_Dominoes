@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace DominoEngine
 {
-    public class Chip<TValue> where TValue : IEquatable<TValue>
+    public class Chip<T> 
     {
-        public TValue LinkR{get;}
-        public TValue LinkL{get;}
-        public Chip(TValue linkR, TValue linkL)
+        public IValue<T> LinkR{get;}
+        public IValue<T> LinkL{get;}
+        public Chip(IValue<T> linkR, IValue<T> linkL)
         {
-            LinkR = linkR;
-            LinkL = linkL;
+            this.LinkR = linkR;
+            this.LinkL = linkL;
         }
     }
 }
