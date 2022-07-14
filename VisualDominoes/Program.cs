@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DominoEngine;
+using DominoEngine.Interfaces;
 
 namespace VisualDominoes
 {
@@ -65,13 +66,21 @@ namespace VisualDominoes
             int CountChip = 7;
             var values = chips[0];
             List<Player<T>> players = new List<Player<T>>();
-            players.Add(new HumanPlayer<T>(0, "name1"));
-            players.Add(new HumanPlayer<T>(1, "name2"));
+            players.Add(new Player<T>("name1", 0, new HumanStrategies<T>()));
+            players.Add(new Player<T>("name2", 1, new HumanStrategies<T>()));
+            List<IWinCondition<T>> winConditions = new List<IWinCondition<T>>();
+            List<IEndCondition<T>> finalConditions = new List<IEndCondition<T>>();
+            winConditions.Add(new PlayAllChips<T>());
+            winConditions.Add(new WinnerByChips<T>());
+            finalConditions.Add(new PlayAllChips<T>());
+            finalConditions.Add(new IsLocked<T>());
+            int numChipPlayer = menu.PrintSelect(new List<string>(), "Cant chip ", 10);
 
-            GameLogic<T> game = new GameLogic<T>(CountChip, values, players);
+
+            Rules<T> rules = new Rules<T>(winConditions,finalConditions,players.Count,numChipPlayer);
+            GameLogic<T> game = new GameLogic<T>(CountChip, values, players,rules);
 
             // tengo que hacer el calculo para valanciar fichas cant y jugadores cant;
-            int numChipPlayer = menu.PrintSelect(new List<string>(), "Cant chip ", 10);
             game.GiveChips(numChipPlayer);
 
             foreach (var item in players)
@@ -146,7 +155,7 @@ namespace VisualDominoes
                 case TypePlayer.HumanPlayer:
                     {
                         string name = Console.ReadLine();
-                        players.Add(new HumanPlayer<T>(order, name));
+                        players.Add(new Player<T>(name,order,new HumanStrategies<T>()));
                         break;
                     }
             }

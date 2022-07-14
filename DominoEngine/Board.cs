@@ -12,16 +12,9 @@ namespace DominoEngine
         {
             return BoardChips;
         }
-
         public int CountChip => BoardChips.Count;
-        public IValue<T> GetLinkR()
-        {
-            return BoardChips.LastOrDefault();
-        }
-        public IValue<T> GetLinkL()
-        {
-            return BoardChips.FirstOrDefault();
-        }
+        public IValue<T>? GetLinkR => BoardChips.LastOrDefault();
+        public IValue<T>? GetLinkL => BoardChips.FirstOrDefault();
         public void AddChip((Chip<T>, IValue<T>?)? chip)
         {
             if (CountChip == 0)
@@ -31,27 +24,27 @@ namespace DominoEngine
             }
             else
             {
-                if (chip.Value.Item2.Equals(GetLinkR()))
+                if (chip.Value.Item2.Equals(GetLinkR))
                 {
-                    if (chip!.Value.Item1.LinkL!.Equals(GetLinkR()))
+                    if (chip!.Value.Item1.LinkL!.Equals(GetLinkR))
                     {
                         BoardChips.AddLast(chip!.Value.Item1.LinkL);
                         BoardChips.AddLast(chip!.Value.Item1.LinkR);
                     }
-                    else if (chip!.Value.Item1.LinkR!.Equals(GetLinkR()))
+                    else if (chip!.Value.Item1.LinkR!.Equals(GetLinkR))
                     {
                         BoardChips.AddLast(chip!.Value.Item1.LinkR);
                         BoardChips.AddLast(chip!.Value.Item1.LinkL);
                     }
                 }
-                else if (chip.Value.Item2.Equals(GetLinkL()))
+                else if (chip.Value.Item2.Equals(GetLinkL))
                 {
-                    if (chip!.Value.Item1.LinkL!.Equals(GetLinkL()))
+                    if (chip!.Value.Item1.LinkL!.Equals(GetLinkL))
                     {
                         BoardChips.AddFirst(chip!.Value.Item1.LinkL);
                         BoardChips.AddFirst(chip!.Value.Item1.LinkR);
                     }
-                    else if (chip!.Value.Item1.LinkR!.Equals(GetLinkL()))
+                    else if (chip!.Value.Item1.LinkR!.Equals(GetLinkL))
                     {
                         BoardChips.AddFirst(chip!.Value.Item1.LinkR);
                         BoardChips.AddFirst(chip!.Value.Item1.LinkL);

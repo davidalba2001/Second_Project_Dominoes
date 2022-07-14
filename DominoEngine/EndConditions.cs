@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DominoEngine.Interfaces;
 
 
 namespace DominoEngine
 {
-    public static class EndConditions<T>
+    public class IsLocked<T>:IEndCondition<T>
     {
-        public static bool IsLocked(List<Player<T>> players)
+        public bool IsFinal(List<Player<T>> players)
         {
             foreach (var item in players)
             {
-                if(!item.step) return false;
+                if(!item.Pass) return false;
             }
-            
             return true;
-        } 
+        }
     }
 }

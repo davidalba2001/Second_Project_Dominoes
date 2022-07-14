@@ -24,20 +24,4 @@ namespace DominoEngine
             else return false;
         }
     }
-
-    public class Number2<T> : IValue<T>
-    {
-        private T item;
-        public Number2(T value)
-        {
-            this.item = value;
-        }
-        public T value => item;
-
-        public bool Equals(T other)
-        {
-             if (this.value.Equals(other)) return true;
-            else return false;
-        }
-    }
 }

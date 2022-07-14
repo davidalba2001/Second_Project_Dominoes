@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DominoEngine.Interfaces;
 
 
 
@@ -12,15 +13,15 @@ namespace DominoEngine
         public int Turn { get; private set; }
         public Board<T> board { get; }
         public List<Player<T>> players { get; private set; }
-        public Rules<T> rules { get; }
+        public IRules<T> Rules { get; }
         public List<Chip<T>> Chips { get; }
         public Player<T>? Winner { get; private set; }
         public Player<T>? CurrentPlayer { get; private set; }
 
-        public GameLogic(int cant, List<IValue<T>> linkedValues, List<Player<T>> players)
+        public GameLogic(int cant, List<IValue<T>> linkedValues, List<Player<T>> players, IRules<T> rules)
         {
             board = new Board<T>();
-            rules = new Rules<T>();
+            Rules = rules;
             //players = new List<Player<T>>();
             Chips = rules.GenerateChips(cant, linkedValues);
             Turn = 0;
@@ -39,7 +40,7 @@ namespace DominoEngine
                 List<Chip<T>> PlayerHand = new List<Chip<T>>();
                 for (int n = 0, j = 0; n < cant; n++)
                 {
-                    PlayerHand.Add(Randomized[i*cant + j++]);
+                    PlayerHand.Add(Randomized[i * cant + j++]);
                 }
                 players[i].TakeHandChip(PlayerHand);
             }
@@ -52,16 +53,16 @@ namespace DominoEngine
             {
                 foreach (var player in players)
                 {
-                    if (rules.IsTurnToPlay(Turn, player.PlayerOrder))
+                    if (Rules.IsTurnToPlay(Turn, player.PlayerOrder))
                     {
                         currentPlayer = player;
-                        if (player.CanPlay(board, rules))
+                        if (player.CanPlay(board, Rules))
                         {
                             CurrentPlayer = currentPlayer;
-                            player.step = false;
+                            player.Pass = false;
                             return;
                         }
-                        else player.step = true;
+                        else player.Pass = true;
                     }
                 }
                 Turn++;
@@ -70,15 +71,17 @@ namespace DominoEngine
         }
         public void CurrentTurn()
         {
-            bool canPlay;
-            var playerMuve = CurrentPlayer!.NextPlay(CurrentPlayer, board, rules, out canPlay);
-            board.AddChip(playerMuve);
-            Turn++;
+            bool canPlay = CurrentPlayer.NextPlay(CurrentPlayer, board, Rules, out (Chip<T>,IValue<T>) playerMove);
+            if (canPlay)
+            {
+                board.AddChip(playerMove);
+                Turn++;
+            }
         }
         public bool EndGame()
         {
             Player<T> Temp;
-            if (rules.IsWinner(this.players, out Temp))
+            if (Rules.IsWinner(this.players, out Temp))
             {
                 this.Winner = Temp;
                 return true;
