@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using DominoEngine.Interfaces;
 namespace DominoEngine
 {
-
     public class Numeric : IValue<int>, IComparable<Numeric>
     {
         public Numeric(int value)

@@ -25,7 +25,8 @@ namespace VisualDominoes
     }
     enum TypePlayer
     {
-        HumanPlayer
+        HumanPlayer,
+        RandomPlyer,
     }
     enum TypeGame
     {
@@ -55,16 +56,14 @@ namespace VisualDominoes
                 case TypeGame.ClasicDominos:
                     {
                         List<Player<Numeric, int>> players = new();
-                        Rules<Numeric, int> rules = new();
-
                         ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
                         for (int i = 0; i < countPlayer; i++)
                         {
                             int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "TypePlayer", typePlayer.Count);
                             InterPrints.AddPlayer(players, selectTypePlayer, i);
                         }
-
-                        NewGame<Numeric, int>(countLinkedValues, numChipForPlayer, Values.ValuesNumerics, players, rules);
+                        ClassicGameLogic<Numeric,int> gameLogic = new(countLinkedValues,Values.ValuesNumerics,players);
+                        NewGame<Numeric, int>(gameLogic,numChipForPlayer);
                         break;
                     }
             }
@@ -73,21 +72,24 @@ namespace VisualDominoes
 
 
         }
-        public void NewGame<TValue, T>(int countValue, int numChipPlayer, TValue[] values, List<Player<TValue, T>> players, IRules<TValue, T> rules) where TValue : IValue<T>
+        public void NewGame<TValue, T>(IGameLogic<TValue, T> game,int numChipPlayer) where TValue : IValue<T>
         {
-            GameLogic<TValue, T> game = new GameLogic<TValue, T>(countValue, values, players, rules);
+           
             //TODO: tengo que hacer el calculo para valanciar fichas cant y jugadores cant;
             game.HandOutChips(numChipPlayer);
 
             do
             {
                 game.ChangeValidCurrentPlayer();
+                if (game.EndGame())
+                {
+                    break;
+                }
                 InterPrints.PrintGame(game);
-                if (game.EndGame()) break;
                 InterPrints.PrintHand(game.CurrentPlayer.GetHand());
                 Console.WriteLine("\n");
                 Console.WriteLine("\n");
-                foreach (var player in players)
+                foreach (var player in game.Players)
                 {
                     Console.WriteLine(player.Name);
                     InterPrints.PrintHand(player.GetHand());
@@ -95,6 +97,19 @@ namespace VisualDominoes
                 game.CurrentTurn();
 
             } while (true);
+            if(game.Winners.Count == 1)
+            {
+                Console.WriteLine("The winner is "+ game.Winners[0].Name);
+            }
+            else
+            {
+                Console.WriteLine("Tie");
+                foreach (var item in game.Winners)
+                {
+                    Console.Write(" "+item.Name);
+                }
+
+            }
 
             Console.Clear();
         }
@@ -150,6 +165,12 @@ namespace VisualDominoes
                         players.Add(new Player<TValue, T>(name, order, new HumanStrategies<TValue, T>()));
                         break;
                     }
+                case TypePlayer.RandomPlyer:
+                    {
+                        string name = Console.ReadLine();
+                        players.Add(new Player<TValue, T>(name, order, new RandomStrategies<TValue, T>()));
+                        break;
+                    }
             }
         }
         public static int VersionChips(int select)
@@ -202,7 +223,7 @@ namespace VisualDominoes
             }
             System.Console.WriteLine();
         }
-        public static void PrintGame<TValue, T>(GameLogic<TValue, T> game) where TValue : IValue<T>
+        public static void PrintGame<TValue, T>(IGameLogic<TValue, T> game) where TValue : IValue<T>
         {
             Console.Clear();
             PrintTable(game.board);

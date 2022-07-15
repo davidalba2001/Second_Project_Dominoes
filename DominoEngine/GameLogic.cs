@@ -10,7 +10,7 @@ namespace DominoEngine
 {
 
 
-    public class GameLogic<TValue, T> where TValue : IValue<T>
+    public class ClassicGameLogic<TValue, T> : IGameLogic<TValue, T> where TValue : IValue<T>
     {
         public int Turn { get; private set; }
         //TODO: No Se que tan necesario sea saber el numero de fichas;
@@ -21,17 +21,15 @@ namespace DominoEngine
         public List<Chip<TValue, T>> Chips { get; }
         public List<Player<TValue, T>>? Winners { get; private set; }
         public Player<TValue, T>? CurrentPlayer { get; private set; }
-
-        public GameLogic(int countLinkedValues, TValue[] linkedValues, List<Player<TValue, T>> players, IRules<TValue, T> rules)
+        public ClassicGameLogic(int countLinkedValues, TValue[] linkedValues, List<Player<TValue, T>> players)
         {
             Turn = 0;
             board = new Board<TValue, T>();
             Players = players;
-            Rules = rules;
-            Chips = rules.GenerateChips(countLinkedValues, linkedValues);
+            Rules = new ClassicRules<TValue, T>();
+            Chips = Rules.GenerateChips(countLinkedValues, linkedValues);
             this.CurrentPlayer = Players[0];
         }
-
         public void HandOutChips(int CountChip)
         {
             //TODO:corregir los indices porque pueden haber mas fichas a asignar que las disponibles
@@ -64,7 +62,11 @@ namespace DominoEngine
                             player.Pass = false;
                             return;
                         }
-                        else player.Pass = true;
+                        else
+                        {
+                            player.Pass = true;
+                            break;
+                        }
                     }
                 }
                 Turn++;
@@ -75,7 +77,7 @@ namespace DominoEngine
         {
             bool canPlay = CurrentPlayer.NextPlay(CurrentPlayer, board, Rules, out (Chip<TValue, T>, TValue) playerMove);
             if (canPlay)
-            { 
+            {
                 board.AddChip(playerMove);
                 CurrentPlayer.PlayChip(playerMove.Item1);
                 Turn++;
@@ -83,16 +85,18 @@ namespace DominoEngine
         }
         public bool EndGame()
         {
+            bool isFinal = false;
             List<Player<TValue, T>>? playersWinners;
             if (Rules.IsTie(Players, out playersWinners))
             {
-                return true;
+                isFinal = true;
             }
             if (Rules.IsWinner(Players, out var __))
             {
-                return true;
+                isFinal = true;
             }
-            return false;
+            Winners = playersWinners;
+            return isFinal;
         }
     }
 }

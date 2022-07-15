@@ -6,20 +6,20 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-    public class HumanStrategies<TValue,T> : IStrategy<TValue,T> where TValue:IValue<T>
+    public class HumanStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
     {
-        public bool ValidMove(Player<TValue,T> player, Board<TValue,T> board, IRules<TValue,T> rules, out (Chip<TValue,T>, TValue) value)
+        public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, IRules<TValue, T> rules, out (Chip<TValue, T>, TValue) value)
         {
             bool canPlay = false;
             int pos;
-            Chip<TValue,T> move;
+            Chip<TValue, T> move;
 
             if (board.CountChip != 0)
             {
                 canPlay = player.CanPlay(board, rules);
                 if (!canPlay)
                 {
-                    value = default((Chip<TValue,T>, TValue));
+                    value = default((Chip<TValue, T>, TValue));
                     return canPlay;
                 }
                 // Esto en interface grafica creo que seria un metodo con  un evento click a una fichha y esa ficha se devuelva
@@ -35,7 +35,7 @@ namespace DominoEngine
                     } while (!isNumeric);
 
                     move = player.GetChipInPos(pos);
-                    IsValidMove = rules.PlayIsValid(move, board.GetLinkL) || rules.PlayIsValid(move,board.GetLinkR);
+                    IsValidMove = rules.PlayIsValid(move, board.GetLinkL) || rules.PlayIsValid(move, board.GetLinkR);
                     if (!IsValidMove) Console.WriteLine("Is not valid");
                 } while (!IsValidMove);
 
@@ -71,7 +71,7 @@ namespace DominoEngine
                 value = (move, board.GetLinkL);
                 return true;
             }
-        
+
             else
             {
                 bool isNumeric;
@@ -80,10 +80,36 @@ namespace DominoEngine
                     Console.WriteLine("Chouse a number between 0 and " + player.NumChips + "dependig of the position of the chip you wanna play");
                     isNumeric = int.TryParse(Console.ReadLine(), out pos);
                     if (!isNumeric) Console.WriteLine("String is not a numeric representation");
-                } while(!isNumeric);
+                } while (!isNumeric);
                 value = (player.GetChipInPos(pos), default(TValue));
                 return true;
             }
         }
     }
+    public class RandomStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
+    {
+        public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, IRules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
+        {
+            List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
+            ValidMoves.AddRange(player.GetValidPlay(board.GetLinkR, rules));
+            if (ValidMoves.Count != 0)
+            {
+                Random RDM = new Random();
+                List<Chip<TValue, T>> Randomized = ValidMoves.OrderBy(Item => RDM.Next()).ToList<Chip<TValue, T>>();
+                if (rules.PlayIsValid(ValidMoves[0], board.GetLinkL))
+                {
+                    move = (ValidMoves[0], board.GetLinkL);
+                    return true;
+                }
+                if (rules.PlayIsValid(ValidMoves[0], board.GetLinkR))
+                {
+                    move = (ValidMoves[0], board.GetLinkR);
+                    return true;
+                }
+            }
+            move = default;
+            return false;
+        }
+    }
+
 }

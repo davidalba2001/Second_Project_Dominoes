@@ -6,7 +6,6 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-
     public class Player<TValue, T> where TValue : IValue<T>
     {
         protected IStrategy<TValue,T> Strategy;
@@ -67,6 +66,4 @@ namespace DominoEngine
 
         }
     }
-
-
 }

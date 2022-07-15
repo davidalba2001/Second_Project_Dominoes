@@ -9,9 +9,7 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-
-
-    public class Rules<TValue, T> : IRules<TValue, T> where TValue : IValue<T>
+    public class ClassicRules<TValue, T> : IRules<TValue, T> where TValue : IValue<T>
     {
         public IWinCondition<TValue, T> WinnerByChips = new WinnerByChips<TValue, T>();
 
