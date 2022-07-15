@@ -5,17 +5,13 @@ using System.Threading.Tasks;
 
 namespace DominoEngine.Interfaces
 {
-     public interface IRules<T>
+    public interface IRules<TValue, T> where TValue : IValue<T>
     {
-        int NumPlayers { get; }
-        int NumChips { get; }
-
-        List<Chip<T>> GenerateChips(int cant, List<IValue<T>> values);
-        bool IsFinal(List<Player<T>> players);
-        bool IsTie(List<Player<T>> players, out List<Player<T>>? winners);
-        bool IsTurnToPlay(int turn, int playerOrder);
-        bool IsWinner(List<Player<T>> players, out Player<T> player);
-        bool PlayIsValid(Chip<T> chip, IValue<T>? value);
-        void SetNumPlayers(int n);
+        List<Chip<TValue, T>> GenerateChips(int cant, TValue[] values);
+        bool IsFinal(List<Player<TValue,T>> players);
+        bool IsTie(List<Player<TValue,T>> players, out List<Player<TValue,T>>? winners);
+        bool IsTurnToPlay(int turn,int NumPlayers, int playerOrder);
+        bool IsWinner(List<Player<TValue,T>> players, out Player<TValue,T> player);
+        bool PlayIsValid(Chip<TValue, T> chip,TValue value);
     }
 }

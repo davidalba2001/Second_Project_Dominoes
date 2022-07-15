@@ -6,20 +6,20 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-    public class HumanStrategies<T> : IStrategy<T>
+    public class HumanStrategies<TValue,T> : IStrategy<TValue,T> where TValue:IValue<T>
     {
-        public bool ValidMove(Player<T> player, Board<T> board, IRules<T> rules, out (Chip<T>, IValue<T>) value)
+        public bool ValidMove(Player<TValue,T> player, Board<TValue,T> board, IRules<TValue,T> rules, out (Chip<TValue,T>, TValue) value)
         {
             bool canPlay = false;
             int pos;
-            Chip<T> move;
+            Chip<TValue,T> move;
 
             if (board.CountChip != 0)
             {
                 canPlay = player.CanPlay(board, rules);
                 if (!canPlay)
                 {
-                    value = default((Chip<T>, IValue<T>));
+                    value = default((Chip<TValue,T>, TValue));
                     return canPlay;
                 }
                 // Esto en interface grafica creo que seria un metodo con  un evento click a una fichha y esa ficha se devuelva
@@ -81,7 +81,7 @@ namespace DominoEngine
                     isNumeric = int.TryParse(Console.ReadLine(), out pos);
                     if (!isNumeric) Console.WriteLine("String is not a numeric representation");
                 } while(!isNumeric);
-                value = (player.GetChipInPos(pos), default(IValue<T>));
+                value = (player.GetChipInPos(pos), default(TValue));
                 return true;
             }
         }

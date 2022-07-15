@@ -11,50 +11,52 @@ namespace DominoEngine
 {
 
 
-    public class Rules<T> : IRules<T>
+    public class Rules<TValue, T> : IRules<TValue, T> where TValue : IValue<T>
     {
+        public IWinCondition<TValue, T> WinnerByChips = new WinnerByChips<TValue, T>();
 
-        private List<IWinCondition<T>> WinConditions;
-        private List<IEndCondition<T>> EndConditions;
+        private IWinCondition<TValue, T> WinAllChip = new PlayAllChips<TValue, T>();
+        private IEndCondition<TValue, T> LockedCondition = new IsLocked<TValue, T>();
+        private IEndCondition<TValue, T> PlayAllChips = new PlayAllChips<TValue, T>();
 
-        public Rules(List<IWinCondition<T>> winConditions, List<IEndCondition<T>> endConditions, int numPlayers, int numChips)
-        {
-            WinConditions = winConditions;
-            EndConditions = endConditions;
-            NumPlayers = numPlayers;
-            NumChips = numChips;
-        }
-        public int NumPlayers { get; private set; }
-        public int NumChips { get; }
-        public bool PlayIsValid(Chip<T> chip, IValue<T>? value)
+        public bool PlayIsValid(Chip<TValue, T> chip, TValue value)
         {
             return chip.LinkL.Equals(value) || chip.LinkR.Equals(value) || value == null;
         }
-        public bool IsTurnToPlay(int turn, int playerOrder)
+        public bool IsTurnToPlay(int turn, int NumPlayers, int playerOrder)
         {
             return turn % NumPlayers == playerOrder;
         }
-        public bool IsFinal(List<Player<T>> players)
+        public List<Chip<TValue, T>> GenerateChips(int cant, TValue[] values)
         {
-            bool isFinal = false;
-            foreach (var condition in EndConditions)
+            List<Chip<TValue, T>> Chips = new List<Chip<TValue, T>>();
+            for (int i = 0; i < cant; i++)
             {
-                isFinal = isFinal || condition.IsFinal(players);
+                for (int j = 1; j < cant; j++)
+                {
+                    Chips.Add(new Chip<TValue, T>(values[i], values[j]));
+                }
             }
-
-            return isFinal;
+            return Chips;
         }
-        public bool IsTie(List<Player<T>> players, out List<Player<T>>? winners)
+
+        public bool IsFinal(List<Player<TValue, T>> players)
         {
-            List<Player<T>> playersWinners = new();
+            return PlayAllChips.IsFinal(players) || LockedCondition.IsFinal(players);
+        }
+        public bool IsTie(List<Player<TValue, T>> players, out List<Player<TValue, T>>? winners)
+        {
+            List<Player<TValue, T>> playersWinners = new();
             if (IsFinal(players))
             {
                 foreach (var player in players)
                 {
-                    foreach (var condition in WinConditions)
+
+                    if (WinnerByChips.IsWinner(player, players) || WinAllChip.IsWinner(player, players))
                     {
-                        if (condition.IsWinner(player, players)) playersWinners.Add(player);
+                        playersWinners.Add(player);
                     }
+
                 }
                 winners = playersWinners;
                 if (playersWinners.Count == 1)
@@ -63,38 +65,21 @@ namespace DominoEngine
                 }
                 return true;
             }
-            winners = default(List<Player<T>>);
+            winners = default(List<Player<TValue, T>>);
             return false;
         }
-        public List<Chip<T>> GenerateChips(int cant, List<IValue<T>> values)
+        public bool IsWinner(List<Player<TValue, T>> players, out Player<TValue, T>? player)
         {
-            List<Chip<T>> Chips = new List<Chip<T>>();
-            for (int i = 0; i < cant; i++)
-            {
-                for (int j = 1; j < cant; j++)
-                {
-                    Chips.Add(new Chip<T>(values[i], values[j]));
-                }
-            }
-            return Chips;
-        }
-        public void SetNumPlayers(int n)
-        {
-            this.NumPlayers = n;
-        }
-
-        public bool IsWinner(List<Player<T>> players, out Player<T>? player)
-        {
-            List<Player<T>> playersWinners = new List<Player<T>>();
+            List<Player<TValue, T>>? playersWinners = new List<Player<TValue, T>>();
 
             if (IsTie(players, out playersWinners))
             {
-                player = default(Player<T>);
+                player = default(Player<TValue, T>);
                 return false;
             }
-            if (playersWinners == null)
+            if (playersWinners == default(List<Player<TValue, T>>))
             {
-                player = default(Player<T>);
+                player = default(Player<TValue, T>);
                 return false;
             }
             else if (playersWinners.Count == 1)
@@ -102,8 +87,9 @@ namespace DominoEngine
                 player = playersWinners[0];
                 return true;
             }
-            player = default(Player<T>);
+            player = default(Player<TValue, T>);
             return false;
         }
+
     }
 }

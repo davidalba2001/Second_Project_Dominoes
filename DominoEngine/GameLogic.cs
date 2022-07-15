@@ -8,52 +8,54 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-    public class GameLogic<T>
+
+
+    public class GameLogic<TValue, T> where TValue : IValue<T>
     {
         public int Turn { get; private set; }
-        public Board<T> board { get; }
-        public List<Player<T>> players { get; private set; }
-        public IRules<T> Rules { get; }
-        public List<Chip<T>> Chips { get; }
-        public Player<T>? Winner { get; private set; }
-        public Player<T>? CurrentPlayer { get; private set; }
+        //TODO: No Se que tan necesario sea saber el numero de fichas;
+        // public int NumChip { get; private set; }
+        public Board<TValue, T> board { get; }
+        public List<Player<TValue, T>> Players { get; private set; }
+        public IRules<TValue, T> Rules { get; }
+        public List<Chip<TValue, T>> Chips { get; }
+        public List<Player<TValue, T>>? Winners { get; private set; }
+        public Player<TValue, T>? CurrentPlayer { get; private set; }
 
-        public GameLogic(int cant, List<IValue<T>> linkedValues, List<Player<T>> players, IRules<T> rules)
+        public GameLogic(int countLinkedValues, TValue[] linkedValues, List<Player<TValue, T>> players, IRules<TValue, T> rules)
         {
-            board = new Board<T>();
-            Rules = rules;
-            //players = new List<Player<T>>();
-            Chips = rules.GenerateChips(cant, linkedValues);
             Turn = 0;
-            this.players = players;
-            this.CurrentPlayer = players[0];
-            rules.SetNumPlayers(players.Count);
+            board = new Board<TValue, T>();
+            Players = players;
+            Rules = rules;
+            Chips = rules.GenerateChips(countLinkedValues, linkedValues);
+            this.CurrentPlayer = Players[0];
         }
 
-        public void GiveChips(int cant)
+        public void HandOutChips(int CountChip)
         {
-            //corregir los indices porque pueden haber mas fichas a asignar que las disponibles
+            //TODO:corregir los indices porque pueden haber mas fichas a asignar que las disponibles
             Random var = new Random();
-            List<Chip<T>> Randomized = Chips.OrderBy(Item => var.Next()).ToList<Chip<T>>();
-            for (int i = 0; i < players.Count; i++)
+            List<Chip<TValue, T>> Randomized = Chips.OrderBy(Item => var.Next()).ToList<Chip<TValue, T>>();
+            for (int i = 0; i < Players.Count; i++)
             {
-                List<Chip<T>> PlayerHand = new List<Chip<T>>();
-                for (int n = 0, j = 0; n < cant; n++)
+                List<Chip<TValue, T>> PlayerHand = new List<Chip<TValue, T>>();
+                for (int n = 0, j = 0; n < CountChip; n++)
                 {
-                    PlayerHand.Add(Randomized[i * cant + j++]);
+                    PlayerHand.Add(Randomized[i * CountChip + j++]);
                 }
-                players[i].TakeHandChip(PlayerHand);
+                Players[i].TakeHandChip(PlayerHand);
             }
         }
-        // debe ser una interface
-        public void ChangeCurrentPlayer()
+        // Busca el proximo juguador valido y actualiza el current player y los turnos
+        public void ChangeValidCurrentPlayer()
         {
-            Player<T> currentPlayer;
-            for (int i = 0; i < players.Count; i++)
+            Player<TValue, T> currentPlayer;
+            for (int i = 0; i < Players.Count; i++)
             {
-                foreach (var player in players)
+                foreach (var player in Players)
                 {
-                    if (Rules.IsTurnToPlay(Turn, player.PlayerOrder))
+                    if (Rules.IsTurnToPlay(Turn, Players.Count, player.PlayerOrder))
                     {
                         currentPlayer = player;
                         if (player.CanPlay(board, Rules))
@@ -71,24 +73,26 @@ namespace DominoEngine
         }
         public void CurrentTurn()
         {
-            bool canPlay = CurrentPlayer.NextPlay(CurrentPlayer, board, Rules, out (Chip<T>,IValue<T>) playerMove);
+            bool canPlay = CurrentPlayer.NextPlay(CurrentPlayer, board, Rules, out (Chip<TValue, T>, TValue) playerMove);
             if (canPlay)
-            {
+            { 
                 board.AddChip(playerMove);
+                CurrentPlayer.PlayChip(playerMove.Item1);
                 Turn++;
             }
         }
         public bool EndGame()
         {
-            Player<T> Temp;
-            if (Rules.IsWinner(this.players, out Temp))
+            List<Player<TValue, T>>? playersWinners;
+            if (Rules.IsTie(Players, out playersWinners))
             {
-                this.Winner = Temp;
                 return true;
             }
-
+            if (Rules.IsWinner(Players, out var __))
+            {
+                return true;
+            }
             return false;
         }
-
     }
 }

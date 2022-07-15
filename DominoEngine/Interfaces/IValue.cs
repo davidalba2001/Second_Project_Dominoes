@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace DominoEngine.Interfaces
 {
-    public interface IEndCondition<TValue, T> where TValue : IValue<T>
+    public interface IValue<T> : IEquatable<IValue<T>>
     {
-        public bool IsFinal(List<Player<TValue, T>> players);
+        public T Value { get; }
     }
+    
 }

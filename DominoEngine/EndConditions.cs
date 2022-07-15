@@ -7,13 +7,13 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-    public class IsLocked<T>:IEndCondition<T>
+    public class IsLocked<TValue, T> : IEndCondition<TValue, T> where TValue : IValue<T>
     {
-        public bool IsFinal(List<Player<T>> players)
+        public bool IsFinal(List<Player<TValue, T>> players)
         {
             foreach (var item in players)
             {
-                if(!item.Pass) return false;
+                if (!item.Pass) return false;
             }
             return true;
         }

@@ -7,37 +7,37 @@ using DominoEngine.Interfaces;
 namespace DominoEngine
 {
 
-    public class Player<T>
+    public class Player<TValue, T> where TValue : IValue<T>
     {
-        protected IStrategy<T> Strategy;
+        protected IStrategy<TValue,T> Strategy;
         public bool Pass { get; set; }
         public string Name { get; protected set; }
-        protected List<Chip<T>> HandChip;
+        protected List<Chip<TValue, T>> HandChip;
         public int PlayerOrder { get; protected set; }
         public int NumChips { get { return HandChip.Count; } }
-        public Player( string name,int playerOrder, IStrategy<T> strategy)
+        public Player(string name, int playerOrder, IStrategy<TValue,T> strategy)
         {
             Name = name;
             this.PlayerOrder = playerOrder;
             Strategy = strategy;
         }
-        public void TakeHandChip(List<Chip<T>> HandChip)
+        public void TakeHandChip(List<Chip<TValue, T>> HandChip)
         {
             this.HandChip = HandChip;
         }
-        public List<Chip<T>> GetHand()
+        public List<Chip<TValue, T>> GetHand()
         {
             return this.HandChip;
         }
-        public Chip<T> GetChipInPos(int pos)
+        public Chip<TValue, T> GetChipInPos(int pos)
         {
             return HandChip[pos];
         }
-        public void PlayChip(Chip<T> chip)
+        public void PlayChip(Chip<TValue, T> chip)
         {
             HandChip.Remove(chip);
         }
-        public bool CanPlay(Board<T> board, IRules<T> rules)
+        public bool CanPlay(Board<TValue,T> board, IRules<TValue, T> rules)
         {
             foreach (var chip in HandChip)
             {
@@ -48,9 +48,9 @@ namespace DominoEngine
             }
             return false;
         }
-        public List<Chip<T>> GetValidPlay(IValue<T> value, IRules<T> rules)
+        public List<Chip<TValue, T>> GetValidPlay(TValue value, IRules<TValue, T> rules)
         {
-            List<Chip<T>> chips = new List<Chip<T>>();
+            List<Chip<TValue, T>> chips = new List<Chip<TValue, T>>();
             foreach (var chip in HandChip)
             {
                 if (rules.PlayIsValid(chip, value))
@@ -60,10 +60,13 @@ namespace DominoEngine
             }
             return chips;
         }
-        public bool NextPlay(Player<T> player, Board<T> board, IRules<T> rules, out (Chip<T>, IValue<T>) move)
+        
+        public bool NextPlay(Player<TValue, T> player, Board<TValue,T> board, IRules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
             return Strategy.ValidMove(player, board, rules, out move);
 
         }
     }
+
+
 }

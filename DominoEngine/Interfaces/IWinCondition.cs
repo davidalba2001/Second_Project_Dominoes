@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace DominoEngine.Interfaces
 {
-    public interface IWinCondition<T>
+    public interface IWinCondition<TValue,T> where TValue : IValue<T>
     {
-        public bool IsWinner(Player<T> player,List<Player<T>> players);
+        public bool IsWinner(Player<TValue,T> player,List<Player<TValue,T>> players);
     }
 }
