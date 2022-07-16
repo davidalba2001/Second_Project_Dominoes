@@ -33,11 +33,29 @@ namespace DominoEngine
 
     //TODO: Implementa el winner Por Puntos
 
-    public class WinnerByPuntos<TValue, T> : IWinCondition<TValue, T> where TValue : IValue<T>, IComparable<TValue>
+    public class WinnerByPuntos<TValue, T> : IWinCondition<TValue, T> where TValue : IValue<T>, IRankable
     {
         public bool IsWinner(Player<TValue,T> player, List<Player<TValue,T>> players)
         {
-            throw new NotImplementedException();
+            int PlayerHandScore = HandScore(player.GetHand());
+            foreach(var item in players)
+            {
+                if(HandScore(item.GetHand())>PlayerHandScore) return false;
+            }
+            return true;
+        }
+        private int HandScore(List<Chip<TValue,T>> Hand)
+        {
+            int HandScore = 0;
+            foreach(var chip in Hand)
+            {
+                HandScore += ChipScore(chip); 
+            }
+            return HandScore;
+        }
+        private int ChipScore(Chip<TValue,T> chip)
+        {
+            return chip.LinkL.Rank()+chip.LinkR.Rank();
         }
     }
 }
