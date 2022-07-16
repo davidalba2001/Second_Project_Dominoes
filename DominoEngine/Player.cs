@@ -36,7 +36,7 @@ namespace DominoEngine
         {
             HandChip.Remove(chip);
         }
-        public bool CanPlay(Board<TValue,T> board, IRules<TValue, T> rules)
+        public bool CanPlay(Board<TValue,T> board,Rules<TValue, T> rules)
         {
             foreach (var chip in HandChip)
             {
@@ -47,7 +47,7 @@ namespace DominoEngine
             }
             return false;
         }
-        public List<Chip<TValue, T>> GetValidPlay(TValue value, IRules<TValue, T> rules)
+        public List<Chip<TValue, T>> GetValidPlay(TValue value,Rules<TValue, T> rules)
         {
             List<Chip<TValue, T>> chips = new List<Chip<TValue, T>>();
             foreach (var chip in HandChip)
@@ -60,7 +60,7 @@ namespace DominoEngine
             return chips;
         }
         
-        public bool NextPlay(Player<TValue, T> player, Board<TValue,T> board, IRules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
+        public bool NextPlay(Player<TValue, T> player, Board<TValue,T> board,Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
             return Strategy.ValidMove(player, board, rules, out move);
 

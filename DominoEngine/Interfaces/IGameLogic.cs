@@ -10,9 +10,8 @@ namespace DominoEngine.Interfaces
         int Turn { get; }
         Board<TValue, T> board { get; }
         List<Player<TValue, T>> Players { get; }
-        IRules<TValue, T> Rules { get; }
+        Rules<TValue, T> Rules { get; }
         List<Chip<TValue, T>> Chips { get; }
-        List<Player<TValue, T>>? Winners { get; }
         Player<TValue, T>? CurrentPlayer { get; }
 
         void ChangeValidCurrentPlayer();

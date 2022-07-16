@@ -9,13 +9,16 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-    public class ClassicRules<TValue, T> : IRules<TValue, T> where TValue : IValue<T>
+    public class Rules<TValue, T> where TValue : IValue<T>
     {
-        public IWinCondition<TValue, T> WinnerByChips = new WinnerByChips<TValue, T>();
+        ICollection<IWinCondition<TValue, T>> WinConditions;
+        ICollection<IEndCondition<TValue, T>> FinalCondition;
 
-        private IWinCondition<TValue, T> WinAllChip = new PlayAllChips<TValue, T>();
-        private IEndCondition<TValue, T> LockedCondition = new IsLocked<TValue, T>();
-        private IEndCondition<TValue, T> PlayAllChips = new PlayAllChips<TValue, T>();
+        public Rules(ICollection<IWinCondition<TValue, T>> winConditions, ICollection<IEndCondition<TValue, T>> finalCondition)
+        {
+            WinConditions = winConditions;
+            FinalCondition = finalCondition;
+        }
 
         public bool PlayIsValid(Chip<TValue, T> chip, TValue value)
         {
@@ -37,57 +40,52 @@ namespace DominoEngine
             }
             return Chips;
         }
-
         public bool IsFinal(List<Player<TValue, T>> players)
         {
-            return PlayAllChips.IsFinal(players) || LockedCondition.IsFinal(players);
+            bool isFinal = false;
+            foreach (var finalCondition in FinalCondition)
+            {
+                isFinal = isFinal || finalCondition.IsFinal(players);
+            }
+            return isFinal;
         }
-        public bool IsTie(List<Player<TValue, T>> players, out List<Player<TValue, T>>? winners)
+        public bool IsTie(List<Player<TValue, T>> players, out  List<Player<TValue, T>> winners)
         {
             List<Player<TValue, T>> playersWinners = new();
-            if (IsFinal(players))
+            foreach (var winCondition in WinConditions)
             {
                 foreach (var player in players)
                 {
-
-                    if (WinnerByChips.IsWinner(player, players) || WinAllChip.IsWinner(player, players))
+                    if (winCondition.IsWinner(player, players))
                     {
-                        playersWinners.Add(player);
+                        if (!playersWinners.Contains(player))
+                        {
+                            playersWinners.Add(player);
+                        }
                     }
-
                 }
+            }
+            if(playersWinners.Count > 1)
+            {
                 winners = playersWinners;
-                if (playersWinners.Count == 1)
-                {
-                    return false;
-                }
                 return true;
             }
-            winners = default(List<Player<TValue, T>>);
+            winners = playersWinners;
             return false;
         }
-        public bool IsWinner(List<Player<TValue, T>> players, out Player<TValue, T>? player)
+        public bool IsWinner(List<Player<TValue, T>> players, out Player<TValue, T> player)
         {
-            List<Player<TValue, T>>? playersWinners = new List<Player<TValue, T>>();
-
-            if (IsTie(players, out playersWinners))
+            List<Player<TValue, T>> playerWin;
+            if(!IsTie(players,out playerWin))
             {
-                player = default(Player<TValue, T>);
-                return false;
+                if(playerWin.Count == 1)
+                {
+                    player = playerWin[0];
+                    return true;
+                }
             }
-            if (playersWinners == default(List<Player<TValue, T>>))
-            {
-                player = default(Player<TValue, T>);
-                return false;
-            }
-            else if (playersWinners.Count == 1)
-            {
-                player = playersWinners[0];
-                return true;
-            }
-            player = default(Player<TValue, T>);
+            player = default;
             return false;
         }
-
     }
 }

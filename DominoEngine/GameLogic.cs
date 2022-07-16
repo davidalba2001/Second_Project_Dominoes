@@ -17,16 +17,15 @@ namespace DominoEngine
         // public int NumChip { get; private set; }
         public Board<TValue, T> board { get; }
         public List<Player<TValue, T>> Players { get; private set; }
-        public IRules<TValue, T> Rules { get; }
+        public Rules<TValue, T> Rules { get; }
         public List<Chip<TValue, T>> Chips { get; }
-        public List<Player<TValue, T>>? Winners { get; private set; }
         public Player<TValue, T>? CurrentPlayer { get; private set; }
-        public ClassicGameLogic(int countLinkedValues, TValue[] linkedValues, List<Player<TValue, T>> players)
+        public ClassicGameLogic(int countLinkedValues,Rules<TValue,T> rules, TValue[] linkedValues, List<Player<TValue, T>> players)
         {
             Turn = 0;
             board = new Board<TValue, T>();
             Players = players;
-            Rules = new ClassicRules<TValue, T>();
+            Rules = rules;
             Chips = Rules.GenerateChips(countLinkedValues, linkedValues);
             this.CurrentPlayer = Players[0];
         }
@@ -85,18 +84,7 @@ namespace DominoEngine
         }
         public bool EndGame()
         {
-            bool isFinal = false;
-            List<Player<TValue, T>>? playersWinners;
-            if (Rules.IsTie(Players, out playersWinners))
-            {
-                isFinal = true;
-            }
-            if (Rules.IsWinner(Players, out var __))
-            {
-                isFinal = true;
-            }
-            Winners = playersWinners;
-            return isFinal;
+            return Rules.IsFinal(Players);
         }
     }
 }
