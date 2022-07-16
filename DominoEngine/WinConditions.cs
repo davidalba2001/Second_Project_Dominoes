@@ -35,27 +35,27 @@ namespace DominoEngine
 
     public class WinnerByPuntos<TValue, T> : IWinCondition<TValue, T> where TValue : IValue<T>, IRankable
     {
-        public bool IsWinner(Player<TValue,T> player, List<Player<TValue,T>> players)
+        public bool IsWinner(Player<TValue, T> player, List<Player<TValue, T>> players)
         {
             int PlayerHandScore = HandScore(player.GetHand());
-            foreach(var item in players)
+            foreach (var item in players)
             {
-                if(HandScore(item.GetHand())>PlayerHandScore) return false;
+                if (HandScore(item.GetHand()) < PlayerHandScore) return false;
             }
             return true;
         }
-        private int HandScore(List<Chip<TValue,T>> Hand)
+        private int HandScore(List<Chip<TValue, T>> Hand)
         {
             int HandScore = 0;
-            foreach(var chip in Hand)
+            foreach (var chip in Hand)
             {
-                HandScore += ChipScore(chip); 
+                HandScore += ChipScore(chip);
             }
             return HandScore;
         }
-        private int ChipScore(Chip<TValue,T> chip)
+        private int ChipScore(Chip<TValue, T> chip)
         {
-            return chip.LinkL.Rank()+chip.LinkR.Rank();
+            return chip.LinkL.Rank() + chip.LinkR.Rank();
         }
     }
 }

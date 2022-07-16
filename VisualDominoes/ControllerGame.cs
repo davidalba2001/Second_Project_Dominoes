@@ -17,9 +17,7 @@ namespace VisualDominoes
             ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
             int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Version de Domino", versionDominoes.Count);
             int countLinkedValues = InterPrints.VersionChips(selectCountChip);
-
             int countPlayer = InterPrints.PrintSelect(new List<string>(), "Number Player", countLinkedValues);
-
             int maxNumChip = ((countLinkedValues * countLinkedValues + 1) / 2) / countPlayer;
             int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Number Chip for Player", maxNumChip);
 
@@ -32,16 +30,35 @@ namespace VisualDominoes
                     {
                         List<Player<Numeric, int>> players = new();
                         ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
+                        
+
                         for (int i = 0; i < countPlayer; i++)
                         {
                             int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "TypePlayer", typePlayer.Count);
                             InterPrints.AddPlayer(players, selectTypePlayer, i);
                         }
-                        IWinCondition<Numeric, int>[] winConditions = { new WinnerByChips<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                        IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                         IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                         Rules<Numeric, int> rules = new(winConditions, finalConditions);
                         ClassicGameLogic<Numeric, int> gameLogic = new(countLinkedValues, rules, Values.ValuesNumerics, players);
                         NewGame<Numeric, int>(gameLogic, numChipForPlayer);
+                        break;
+                    }
+                case TypeGame.PrittyBoy:
+                    {
+                        List<Player<Emojis, string>> emoplayer = new();
+                        ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
+                        for (int i = 0; i < countPlayer; i++)
+                        {
+                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "TypePlayer", typePlayer.Count);
+                            InterPrints.AddPlayer(emoplayer, selectTypePlayer, i);
+                        }
+                        IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
+                        IEndCondition<Emojis, string>[] finalConditions = { new IsLocked<Emojis, string>(), new PlayAllChips<Emojis, string>() };
+                        Rules<Emojis, string> rules = new(winConditions,finalConditions);
+                        ClassicGameLogic<Emojis, string> gameLogic = new(countLinkedValues, rules, Values.ValuesEmojis,emoplayer);
+                        
+                        NewGame<Emojis, string>(gameLogic, numChipForPlayer);
                         break;
                     }
             }

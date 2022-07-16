@@ -8,8 +8,6 @@ using DominoEngine.Interfaces;
 
 namespace DominoEngine
 {
-
-
     public class ClassicGameLogic<TValue, T> : IGameLogic<TValue, T> where TValue : IValue<T>
     {
         public int Turn { get; private set; }
@@ -44,6 +42,7 @@ namespace DominoEngine
                 Players[i].TakeHandChip(PlayerHand);
             }
         }
+       
         // Busca el proximo juguador valido y actualiza el current player y los turnos
         public void ChangeValidCurrentPlayer()
         {
@@ -87,4 +86,11 @@ namespace DominoEngine
             return Rules.IsFinal(Players);
         }
     }
+
+
+   
+
+
+
+
 }

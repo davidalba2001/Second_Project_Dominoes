@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using DominoEngine.Interfaces;
 namespace DominoEngine
 {
-    public class Numeric : IValue<int>, IComparable<Numeric>
+    public class Numeric : IValue<int>, IRankable
     {
         public Numeric(int value)
         {
@@ -27,6 +27,17 @@ namespace DominoEngine
             return object.Equals(this, other);
         }
 
+        public int Rank()
+        {
+            return Value;
+        }
+
+        public int CompareTo(IRankable? other)
+        {
+            if(this.Rank() == other.Rank()) return 0;
+            if (this.Rank() < other.Rank()) return -1;
+            return 1;
+        }
 
         public static bool operator <(Numeric value1, Numeric value2)
         {
@@ -45,4 +56,19 @@ namespace DominoEngine
             return value1.CompareTo(value2) != 0;
         }
     }
+
+    public class Emojis : IValue<string>
+    {
+        public string Value{get;}
+         public Emojis(string value)
+        {
+            Value = value;
+        }
+
+        public bool Equals(IValue<string>? other)
+        {
+            return object.Equals(this, other);
+        }
+    }
+
 }

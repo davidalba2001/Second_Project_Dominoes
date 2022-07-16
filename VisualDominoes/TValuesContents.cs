@@ -15,5 +15,15 @@ namespace VisualDominoes
         ,new Numeric(10),new Numeric(11),new Numeric(12),new Numeric(13),new Numeric(14)
         ,new Numeric(15),new Numeric(16),new Numeric(17),new Numeric(18),new Numeric(19)
          };
+
+         public Emojis[] ValuesEmojis = new Emojis[20]
+         {
+        new Emojis("💖"),new Emojis("🕷️ "),new Emojis("☠️"),new Emojis("⭐"),new Emojis("🙃")
+        ,new Emojis("😉"),new Emojis("💠"),new Emojis("🐟"),new Emojis("🐔"),new Emojis("🚙")
+        ,new Emojis("👆"),new Emojis("🥚"),new Emojis("🤗"),new Emojis("🛒"),new Emojis("🍨")
+        ,new Emojis("🌪"),new Emojis("🎵"),new Emojis("🐼"),new Emojis("🚓"),new Emojis("🚗")
+         };
+         
+        
     }
 }

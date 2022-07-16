@@ -84,7 +84,7 @@ namespace DominoEngine
                     return true;
                 }
             }
-            player = default;
+            player = default(Player<TValue, T>);
             return false;
         }
     }

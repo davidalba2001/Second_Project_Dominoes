@@ -18,7 +18,8 @@ namespace VisualDominoes
     }
     enum TypeGame
     {
-        ClasicDominos
+        ClasicDominos,
+        PrittyBoy,
     }
   
     public static class InterPrints
