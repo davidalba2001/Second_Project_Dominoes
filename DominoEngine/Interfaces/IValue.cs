@@ -7,7 +7,7 @@ namespace DominoEngine.Interfaces
 {
     public interface IValue<T> : IEquatable<IValue<T>>
     {
-        public T Value { get; }
+        public T? Value { get; }
     }
     
 }

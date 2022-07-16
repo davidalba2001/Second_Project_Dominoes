@@ -14,6 +14,7 @@ namespace DominoEngine
 
         public int Value { get; }
 
+       
 
         public int CompareTo(Numeric other)
         {
@@ -57,7 +58,7 @@ namespace DominoEngine
         }
     }
 
-    public class Emojis : IValue<string>
+    public class Emojis : IValue<string>,IRankable
     {
         public string Value{get;}
          public Emojis(string value)
@@ -68,6 +69,16 @@ namespace DominoEngine
         public bool Equals(IValue<string>? other)
         {
             return object.Equals(this, other);
+        }
+
+        public int Rank()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CompareTo(IRankable? other)
+        {
+            throw new NotImplementedException();
         }
     }
 

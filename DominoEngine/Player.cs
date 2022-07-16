@@ -24,6 +24,10 @@ namespace DominoEngine
         {
             this.HandChip = HandChip;
         }
+         public void TakeChip(Chip<TValue, T> chip)
+        {
+            this.HandChip.Add(chip);
+        }
         public List<Chip<TValue, T>> GetHand()
         {
             return this.HandChip;
@@ -61,9 +65,9 @@ namespace DominoEngine
             return chips;
         }
 
-        public bool NextPlay(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
+        public bool NextPlay(Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
-            return Strategy.ValidMove(player, board, rules, out move);
+            return Strategy.ValidMove(this,board, rules, out move);
 
         }
     }

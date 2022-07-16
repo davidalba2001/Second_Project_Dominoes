@@ -18,7 +18,7 @@ namespace DominoEngine
         public Rules<TValue, T> Rules { get; }
         public List<Chip<TValue, T>> Chips { get; }
         public Player<TValue, T>? CurrentPlayer { get; private set; }
-        public ClassicGameLogic(int countLinkedValues,Rules<TValue,T> rules, TValue[] linkedValues, List<Player<TValue, T>> players)
+        public ClassicGameLogic(int countLinkedValues, Rules<TValue, T> rules, TValue[] linkedValues, List<Player<TValue, T>> players)
         {
             Turn = 0;
             board = new Board<TValue, T>();
@@ -42,7 +42,7 @@ namespace DominoEngine
                 Players[i].TakeHandChip(PlayerHand);
             }
         }
-       
+
         // Busca el proximo juguador valido y actualiza el current player y los turnos
         public void ChangeValidCurrentPlayer()
         {
@@ -73,7 +73,7 @@ namespace DominoEngine
         }
         public void CurrentTurn()
         {
-            bool canPlay = CurrentPlayer.NextPlay(CurrentPlayer, board, Rules, out (Chip<TValue, T>, TValue) playerMove);
+            bool canPlay = CurrentPlayer.NextPlay(board, Rules, out (Chip<TValue, T>, TValue) playerMove);
             if (canPlay)
             {
                 board.AddChip(playerMove);
@@ -87,73 +87,51 @@ namespace DominoEngine
         }
     }
 
-     public class TapadinLogic<TValue, T> : IGameLogic<TValue, T> where TValue : IValue<T>
+    public class TapadinLogic<TValue, T> : IGameLogic<TValue, T> where TValue : IValue<T>
     {
+        public int Turn { get; private set; }
+        public Board<TValue, T> board { get; private set; }
+        public List<Player<TValue, T>> Players { get; private set; }
+        public Rules<TValue, T> Rules { get; private set; }
+        public List<Chip<TValue, T>> Chips { get; private set; }
+        public Player<TValue, T>? CurrentPlayer { get; private set; }
 
-        public int Turn {get; private set;}
-
-        public Board<TValue, T> board {get;}
-
-        public List<Player<TValue, T>> Players {get;}
-
-        public Rules<TValue, T> Rules {get;}
-
-        public List<Chip<TValue, T>> Chips {get;}
-        private Dictionary<Player<TValue,T>,List<HidenChip>> HidenChips;
-
-        public Player<TValue, T>? CurrentPlayer {get; private set;}
-        public TapadinLogic(int countLinkedValues,Rules<TValue,T> rules, TValue[] linkedValues, List<Player<TValue, T>> players)
+        public TapadinLogic(int countLinkedValues, Rules<TValue, T> rules, TValue[] linkedValues, List<Player<TValue, T>> players)
         {
             Turn = 0;
-            this.board = new();
+            board = new Board<TValue, T>();
             Players = players;
             Rules = rules;
-            Chips = rules.GenerateChips(countLinkedValues, linkedValues);
+            Chips = Rules.GenerateChips(countLinkedValues, linkedValues);
+            this.CurrentPlayer = Players[0];
         }
-
         public void ChangeValidCurrentPlayer()
         {
-            Player<TValue, T> currentPlayer;
             foreach (var player in Players)
             {
                 if (Rules.IsTurnToPlay(Turn, Players.Count, player.PlayerOrder))
                 {
-                    currentPlayer = player;
+                    CurrentPlayer = player;
                 }
             }
-            
         }
 
         public void CurrentTurn()
-        {   
-            if(NoMoreHidenChips(HidenChips[CurrentPlayer])&&!CurrentPlayer.CanPlay(board, Rules))
-            { 
-                CurrentPlayer.Pass = true;
-                return;
-            }
-            bool EndTurn = false;
-            CurrentPlayer.Pass = false;
-            do
+        {
+            (Chip<TValue, T>, TValue) move = new();
+            while (!CurrentPlayer.NextPlay(board, Rules, out move))
             {
-                if(!CurrentPlayer.CanPlay(board, Rules))
+                if (Chips.Count == 0)
                 {
-                    EndTurn = true;
-                    CurrentPlayer.TakeHandChip(RefreshHand(HidenChips[CurrentPlayer]));
+                    CurrentPlayer.Pass = true;
+                    Turn++;
+                    return;
                 }
-                else
-                {
-                    bool canPlay = CurrentPlayer.NextPlay(CurrentPlayer, board, Rules, out (Chip<TValue, T>, TValue) playerMove);
-                    if (canPlay)
-                    {
-                        RemoveChip(HidenChips[CurrentPlayer], playerMove.Item1);
-                        board.AddChip(playerMove);
-                        CurrentPlayer.PlayChip(playerMove.Item1);
-                    }
-                }
-
-            }while(CurrentPlayer.CanPlay(board, Rules) || !EndTurn);
-            Turn++;    
-            
+                CurrentPlayer.TakeChip(Chips[0]);
+                Chips.Remove(Chips[0]);
+            }
+            board.AddChip(move);
+            Turn++;
         }
 
         public bool EndGame()
@@ -163,75 +141,24 @@ namespace DominoEngine
 
         public void HandOutChips(int CountChip)
         {
+            int Last = 0;
             Random RDM = new Random();
             List<Chip<TValue, T>> Randomized = Chips.OrderBy(Item => RDM.Next()).ToList<Chip<TValue, T>>();
             for (int i = 0; i < Players.Count; i++)
             {
-                List<HidenChip> PlayerHand = new();
+                List<Chip<TValue, T>> PlayerHand = new();
                 for (int n = 0, j = 0; n < CountChip; n++)
                 {
-                    PlayerHand.Add(new HidenChip(Randomized[i * CountChip + j++]));
+                    Last = i * CountChip + j;
+                    PlayerHand.Add(Randomized[i * CountChip + j++]);
                 }
-                PlayerHand[0].IsHiden = false;
-                Players[i].TakeHandChip(RefreshHand(PlayerHand));
-                HidenChips.Add(Players[i],PlayerHand);
-                
+                Players[i].TakeHandChip(PlayerHand);
+                Chips = Randomized.Take(new Range(Last, CountChip)).ToList();
             }
-        }
-
-        private List<Chip<TValue,T>> RefreshHand(List<HidenChip> hidenChips)
-        {
-            bool IsFirstHidenChip = true;
-            List<Chip<TValue,T>> Hand = new();
-            foreach(var chip in hidenChips)
-            {
-                if(chip.IsHiden&&IsFirstHidenChip)
-                {
-                    chip.IsHiden = false;
-                    IsFirstHidenChip = false;
-                    Hand.Add(chip.Chip);
-                }
-                if(chip.IsHiden)
-                {
-                    Hand.Add(new());
-                }
-                else Hand.Add(chip.Chip);
-            }
-            return Hand;
-        }
-        private void RemoveChip(List<HidenChip> hidenChips, Chip<TValue,T> chip)
-        {
-            foreach(var item in hidenChips)
-            {
-                if(item.Chip.Equals(chip))
-                {
-                    hidenChips.Remove(item);
-                    break;
-                }
-            }
-        }
-        private bool NoMoreHidenChips(List<HidenChip> chips)
-        {
-            foreach(var chip in chips)
-            {
-                if(chip.IsHiden) return false;
-            }
-            return true;
-        }
-        private class HidenChip
-        {
-            public bool IsHiden;
-            public Chip<TValue,T> Chip {get;private set;}
-            public HidenChip(Chip<TValue, T> chip)
-            {
-                IsHiden = false;
-                Chip = chip;
-            }
-            
         }
     }
-  
-   
+
+
 
 
 

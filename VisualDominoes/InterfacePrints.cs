@@ -11,15 +11,20 @@ namespace VisualDominoes
         Doble9,
         Doble10,
     }
+
+
     enum TypePlayer
     {
         HumanPlayer,
         RandomPlyer,
+        BotaGorda,
+
     }
     enum TypeGame
     {
         ClasicDominos,
         PrittyBoy,
+        Tapadin,
     }
   
     public static class InterPrints
@@ -58,7 +63,7 @@ namespace VisualDominoes
             } while (!isNumeric || select > count || select < 0);
             return select;
         }
-        public static void AddPlayer<TValue, T>(List<Player<TValue, T>> players, int select, int order) where TValue : IValue<T>
+        public static void AddPlayer<TValue,T>(List<Player<TValue,T>> players, int select, int order) where TValue : IValue<T> ,IRankable
         {
             Console.Clear();
             Console.WriteLine("Say the name of player");
@@ -77,8 +82,16 @@ namespace VisualDominoes
                         players.Add(new Player<TValue, T>(name, order, new RandomStrategies<TValue, T>()));
                         break;
                     }
+                case TypePlayer.BotaGorda:
+                    {
+                        string name = Console.ReadLine();
+                        players.Add(new Player<TValue,T>(name, order, new BotaGordaStategies<TValue, T>()));
+                        break;
+                    }
             }
         }
+
+    
         public static int VersionChips(int select)
         {
 

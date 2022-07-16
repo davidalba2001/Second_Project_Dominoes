@@ -61,6 +61,29 @@ namespace VisualDominoes
                         NewGame<Emojis, string>(gameLogic, numChipForPlayer);
                         break;
                     }
+                case TypeGame.Tapadin:
+                {
+                        List<Player<Numeric, int>> players = new();
+                        ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
+                        for (int i = 0; i < countPlayer; i++)
+                        {
+                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "TypePlayer", typePlayer.Count);
+                            InterPrints.AddPlayer(players, selectTypePlayer, i);
+                        }
+                        IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                        IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                        Rules<Numeric, int> rules = new(winConditions, finalConditions);
+                        TapadinLogic<Numeric, int> gameLogic = new TapadinLogic<Numeric, int>(countLinkedValues,rules,Values.ValuesNumerics,players);
+                        
+                        NewGame<Numeric, int>(gameLogic, numChipForPlayer);
+                        break;
+                }
+
+
+
+
+
+
             }
         }
         public void NewGame<TValue, T>(IGameLogic<TValue, T> Game, int numChipPlayer) where TValue : IValue<T>
