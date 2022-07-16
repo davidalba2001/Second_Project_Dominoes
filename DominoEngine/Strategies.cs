@@ -111,5 +111,43 @@ namespace DominoEngine
             return false;
         }
     }
+    public class BotaGordaStategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>, IRankable
+    {
+        public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, IRules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
+        {
+            List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
+            ValidMoves.AddRange(player.GetValidPlay(board.GetLinkR, rules));
+            if(ValidMoves.Count != 0)
+            {
+                Chip<TValue,T> BestRanked = GetBestRankedChip(ValidMoves);
+                if (rules.PlayIsValid(BestRanked, board.GetLinkL))
+                {
+                    move = (BestRanked, board.GetLinkL);
+                    return true;
+                }
+                if (rules.PlayIsValid(BestRanked, board.GetLinkR))
+                {
+                    move = (BestRanked, board.GetLinkR);
+                    return true;
+                }                
+            }
+            move = default;
+            return false;
+        }
+        private Chip<TValue,T> GetBestRankedChip(List<Chip<TValue,T>> ValidMoves)
+        {
+            Chip<TValue,T> BestRanked = ValidMoves[0];
+            foreach(var chip in ValidMoves)
+            {
+                if(ChipScore(BestRanked)<ChipScore(chip)) BestRanked = chip;
+            }
+            return BestRanked;
+        }
+        private int ChipScore(Chip<TValue,T> Chip)
+        {
+            return Chip.LinkL.Rank()+Chip.LinkR.Rank();
+        }
+
+    }
 
 }
