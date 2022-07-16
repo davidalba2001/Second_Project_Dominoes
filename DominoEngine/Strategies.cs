@@ -113,7 +113,7 @@ namespace DominoEngine
     }
     public class BotaGordaStategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>, IRankable
     {
-        public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, IRules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
+        public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
             List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
             ValidMoves.AddRange(player.GetValidPlay(board.GetLinkR, rules));
