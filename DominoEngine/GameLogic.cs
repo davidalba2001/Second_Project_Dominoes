@@ -130,6 +130,7 @@ namespace DominoEngine
                 CurrentPlayer.TakeChip(Chips[0]);
                 Chips.Remove(Chips[0]);
             }
+            CurrentPlayer.PlayChip(move.Item1);
             board.AddChip(move);
             Turn++;
         }
@@ -153,8 +154,18 @@ namespace DominoEngine
                     PlayerHand.Add(Randomized[i * CountChip + j++]);
                 }
                 Players[i].TakeHandChip(PlayerHand);
-                Chips = Randomized.Take(new Range(Last, CountChip)).ToList();
+                Chips = Randomized.Take(new Range(Last, CountChip)).ToList();   
+                //Chips = After(Randomized,Last);     
             }
+        }
+        private List<Chip<TValue,T>> After(List<Chip<TValue,T>> Chips, int pos)
+        {
+            List<Chip<TValue,T>> result = new();
+            for (int i = pos; i < Chips.Count; i++)
+            {
+                result.Add(Chips[i]);
+            }
+            return result;
         }
     }
 
