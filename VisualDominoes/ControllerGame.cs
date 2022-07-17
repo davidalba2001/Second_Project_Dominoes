@@ -15,14 +15,14 @@ namespace VisualDominoes
             InterPrints.Front();
 
             ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
-            int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Version de Domino", versionDominoes.Count);
+            int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version", versionDominoes.Count);
             int countLinkedValues = InterPrints.VersionChips(selectCountChip);
-            int countPlayer = InterPrints.PrintSelect(new List<string>(), "Number Player", countLinkedValues);
+            int countPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of players", countLinkedValues);
             int maxNumChip = ((countLinkedValues * countLinkedValues + 1) / 2) / countPlayer;
-            int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Number Chip for Player", maxNumChip);
+            int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand", maxNumChip);
 
             ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
-            int selectTypeGame = InterPrints.PrintSelect(typesGames, "Type Game", typesGames.Count);
+            int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type", typesGames.Count);
             TypeGame typeGame = (TypeGame)selectTypeGame;
             switch (typeGame)
             {
@@ -34,7 +34,7 @@ namespace VisualDominoes
 
                         for (int i = 0; i < countPlayer; i++)
                         {
-                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "TypePlayer", typePlayer.Count);
+                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
                             InterPrints.AddPlayer(players, selectTypePlayer, i);
                         }
                         IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
@@ -50,7 +50,7 @@ namespace VisualDominoes
                         ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
                         for (int i = 0; i < countPlayer; i++)
                         {
-                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "TypePlayer", typePlayer.Count);
+                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
                             InterPrints.AddPlayer(emoplayer, selectTypePlayer, i);
                         }
                         IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
@@ -61,19 +61,19 @@ namespace VisualDominoes
                         NewGame<Emojis, string>(gameLogic, numChipForPlayer);
                         break;
                     }
-                case TypeGame.Tapadin:
+                case TypeGame.Stolen:
                 {
                         List<Player<Numeric, int>> players = new();
                         ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
                         for (int i = 0; i < countPlayer; i++)
                         {
-                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "TypePlayer", typePlayer.Count);
+                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
                             InterPrints.AddPlayer(players, selectTypePlayer, i);
                         }
                         IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                         IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                         Rules<Numeric, int> rules = new(winConditions, finalConditions);
-                        TapadinLogic<Numeric, int> gameLogic = new TapadinLogic<Numeric, int>(countLinkedValues,rules,Values.ValuesNumerics,players);
+                        StolenLogic<Numeric, int> gameLogic = new StolenLogic<Numeric, int>(countLinkedValues,rules,Values.ValuesNumerics,players);
                         
                         NewGame<Numeric, int>(gameLogic, numChipForPlayer);
                         break;

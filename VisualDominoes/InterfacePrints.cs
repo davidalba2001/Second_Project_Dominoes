@@ -25,7 +25,7 @@ namespace VisualDominoes
     {
         ClasicDominos,
         PrittyBoy,
-        Tapadin,
+        Stolen,
     }
   
     public static class InterPrints
@@ -54,14 +54,14 @@ namespace VisualDominoes
             do
             {
                 isNumeric = int.TryParse(Console.ReadLine(), out select);
-                if (!isNumeric || select > count || select < 0)
+                if (!isNumeric || select >= count || select < 0)
                 {
                     Console.WriteLine("Seleccion incorrecta");
-                    Console.WriteLine("El tipo debe ser numerico y estar en el rago " + "(0 -" + count + ")");
+                    Console.WriteLine("El tipo debe ser numerico y estar en el rago " + "(0 -" + (count-1) + ")");
                     Console.WriteLine("Seleccione otro numero");
 
                 }
-            } while (!isNumeric || select > count || select < 0);
+            } while (!isNumeric || select >= count || select < 0);
             return select;
         }
         public static void AddPlayer<TValue,T>(List<Player<TValue,T>> players, int select, int order) where TValue : IValue<T> ,IRankable

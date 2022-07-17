@@ -87,7 +87,7 @@ namespace DominoEngine
         }
     }
 
-    public class TapadinLogic<TValue, T> : IGameLogic<TValue, T> where TValue : IValue<T>
+    public class StolenLogic<TValue, T> : IGameLogic<TValue, T> where TValue : IValue<T>
     {
         public int Turn { get; private set; }
         public Board<TValue, T> board { get; private set; }
@@ -96,7 +96,7 @@ namespace DominoEngine
         public List<Chip<TValue, T>> Chips { get; private set; }
         public Player<TValue, T>? CurrentPlayer { get; private set; }
 
-        public TapadinLogic(int countLinkedValues, Rules<TValue, T> rules, TValue[] linkedValues, List<Player<TValue, T>> players)
+        public StolenLogic(int countLinkedValues, Rules<TValue, T> rules, TValue[] linkedValues, List<Player<TValue, T>> players)
         {
             Turn = 0;
             board = new Board<TValue, T>();
@@ -154,18 +154,8 @@ namespace DominoEngine
                     PlayerHand.Add(Randomized[i * CountChip + j++]);
                 }
                 Players[i].TakeHandChip(PlayerHand);
-                Chips = Randomized.Take(new Range(Last, CountChip)).ToList();   
-                //Chips = After(Randomized,Last);     
+                Chips = Randomized.Take(new Range(Last, CountChip)).ToList();       
             }
-        }
-        private List<Chip<TValue,T>> After(List<Chip<TValue,T>> Chips, int pos)
-        {
-            List<Chip<TValue,T>> result = new();
-            for (int i = pos; i < Chips.Count; i++)
-            {
-                result.Add(Chips[i]);
-            }
-            return result;
         }
     }
 
