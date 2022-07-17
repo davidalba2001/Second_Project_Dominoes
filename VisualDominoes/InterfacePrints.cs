@@ -27,7 +27,7 @@ namespace VisualDominoes
         PrittyBoy,
         Stolen,
     }
-  
+
     public static class InterPrints
     {
         public static void Front()
@@ -57,14 +57,14 @@ namespace VisualDominoes
                 if (!isNumeric || select >= count || select < 0)
                 {
                     Console.WriteLine("Seleccion incorrecta");
-                    Console.WriteLine("El tipo debe ser numerico y estar en el rago " + "(0 -" + (count-1) + ")");
+                    Console.WriteLine("El tipo debe ser numerico y estar en el rago " + "(0 -" + (count - 1) + ")");
                     Console.WriteLine("Seleccione otro numero");
 
                 }
             } while (!isNumeric || select >= count || select < 0);
             return select;
         }
-        public static void AddPlayer<TValue,T>(List<Player<TValue,T>> players, int select, int order) where TValue : IValue<T> ,IRankable
+        public static void AddPlayer<TValue, T>(List<Player<TValue, T>> players, int select, int order) where TValue : IValue<T>, IRankable
         {
             Console.Clear();
             Console.WriteLine("Write the player name");
@@ -86,19 +86,19 @@ namespace VisualDominoes
                 case TypePlayer.BotaGorda:
                     {
                         string name = Console.ReadLine();
-                        players.Add(new Player<TValue,T>(name, order, new BotaGordaStategies<TValue, T>()));
+                        players.Add(new Player<TValue, T>(name, order, new BotaGordaStategies<TValue, T>()));
                         break;
                     }
                 case TypePlayer.AlmostClever:
                     {
                         string name = Console.ReadLine();
-                        players.Add(new Player<TValue,T>(name, order, new AlmostCleverStrategies<TValue, T>()));
+                        players.Add(new Player<TValue, T>(name, order, new AlmostCleverStrategies<TValue, T>()));
                         break;
                     }
             }
         }
 
-    
+
         public static int VersionChips(int select)
         {
 
@@ -127,12 +127,22 @@ namespace VisualDominoes
         public static void PrintTable<TValue, T>(Board<TValue, T> table) where TValue : IValue<T>
         {
             List<TValue> Table = table.GetBoard();
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("Table");
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
+            if (Table.Count == 0) Console.WriteLine("Table Is Empty");
 
             for (int i = 0; i < Table.Count; i = i + 2)
             {
                 Console.Write("[" + Table[i].Value + "|" + Table[i + 1].Value + "]");
             }
-            System.Console.WriteLine();
+            System.Console.WriteLine("\n");
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
+            System.Console.WriteLine("\n");
+            Console.ForegroundColor = ConsoleColor.White;
+            
         }
         public static void PrintHand<TValue, T>(List<Chip<TValue, T>> Hand) where TValue : IValue<T>
         {
@@ -150,10 +160,12 @@ namespace VisualDominoes
         }
         public static void PrintGame<TValue, T>(IGameLogic<TValue, T> Game) where TValue : IValue<T>
         {
+            
             Console.Clear();
             PrintTable(Game.board);
             Console.WriteLine("Player Turn: " + Game.CurrentPlayer.Name);
             Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Red;
         }
     }
 }

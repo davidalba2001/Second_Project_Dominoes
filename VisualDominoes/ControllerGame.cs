@@ -30,7 +30,7 @@ namespace VisualDominoes
                     {
                         List<Player<Numeric, int>> players = new();
                         ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
-                        
+
 
                         for (int i = 0; i < countPlayer; i++)
                         {
@@ -55,14 +55,14 @@ namespace VisualDominoes
                         }
                         IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
                         IEndCondition<Emojis, string>[] finalConditions = { new IsLocked<Emojis, string>(), new PlayAllChips<Emojis, string>() };
-                        Rules<Emojis, string> rules = new(winConditions,finalConditions);
-                        ClassicGameLogic<Emojis, string> gameLogic = new(countLinkedValues, rules, Values.ValuesEmojis,emoplayer);
-                        
+                        Rules<Emojis, string> rules = new(winConditions, finalConditions);
+                        ClassicGameLogic<Emojis, string> gameLogic = new(countLinkedValues, rules, Values.ValuesEmojis, emoplayer);
+
                         NewGame<Emojis, string>(gameLogic, numChipForPlayer);
                         break;
                     }
                 case TypeGame.Stolen:
-                {
+                    {
                         List<Player<Numeric, int>> players = new();
                         ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
                         for (int i = 0; i < countPlayer; i++)
@@ -73,11 +73,11 @@ namespace VisualDominoes
                         IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                         IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                         Rules<Numeric, int> rules = new(winConditions, finalConditions);
-                        StolenLogic<Numeric, int> gameLogic = new StolenLogic<Numeric, int>(countLinkedValues,rules,Values.ValuesNumerics,players);
-                        
+                        StolenLogic<Numeric, int> gameLogic = new StolenLogic<Numeric, int>(countLinkedValues, rules, Values.ValuesNumerics, players);
+
                         NewGame<Numeric, int>(gameLogic, numChipForPlayer);
                         break;
-                }
+                    }
 
 
 
@@ -102,12 +102,16 @@ namespace VisualDominoes
                 InterPrints.PrintGame(Game);
                 InterPrints.PrintHand(Game.CurrentPlayer.GetHand());
                 Console.WriteLine("\n");
-                Console.WriteLine("\n");
+                Console.WriteLine("Mano de Todos los jugadores");
+                Console.WriteLine("---------------------------------------------------------------------");
+                Console.WriteLine("---------------------------------------------------------------------");
                 foreach (var player in Game.Players)
                 {
                     Console.WriteLine(player.Name);
                     InterPrints.PrintHand(player.GetHand());
                 }
+                Console.WriteLine("---------------------------------------------------------------------");
+                Console.WriteLine("---------------------------------------------------------------------");
                 Game.CurrentTurn();
                 Console.ReadKey();
 
