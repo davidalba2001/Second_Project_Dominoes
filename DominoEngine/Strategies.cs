@@ -30,7 +30,7 @@ namespace DominoEngine
                     bool isNumeric;
                     do
                     {
-                        Console.WriteLine("Chouse a number between 0 and " + (player.NumChips - 1) + "dependig of the position of the chip you wanna play");
+                        Console.WriteLine("Chouse a number between 0 and " + (player.NumChips - 1) + " dependig of the position of the chip you wanna play");
                         isNumeric = int.TryParse(Console.ReadLine(), out pos);
                         if (!isNumeric) Console.WriteLine("String is not a numeric representation");
                     } while (!isNumeric);
