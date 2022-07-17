@@ -18,6 +18,7 @@ namespace VisualDominoes
         HumanPlayer,
         RandomPlyer,
         BotaGorda,
+        AlmostClever,
 
     }
     enum TypeGame
@@ -40,7 +41,7 @@ namespace VisualDominoes
             bool isNumeric;
             Console.Clear();
             Console.WriteLine(description);
-            Console.WriteLine("Select:");
+            Console.WriteLine("Select: ");
             int i = 0;
             if (selected.Count > 0)
             {
@@ -56,7 +57,7 @@ namespace VisualDominoes
                 if (!isNumeric || select > count || select < 0)
                 {
                     Console.WriteLine("Seleccion incorrecta");
-                    Console.WriteLine("El tipo debe ser numerico y estar en el rago" + "(0 -" + count + ")");
+                    Console.WriteLine("El tipo debe ser numerico y estar en el rago " + "(0 -" + count + ")");
                     Console.WriteLine("Seleccione otro numero");
 
                 }
@@ -66,7 +67,7 @@ namespace VisualDominoes
         public static void AddPlayer<TValue,T>(List<Player<TValue,T>> players, int select, int order) where TValue : IValue<T> ,IRankable
         {
             Console.Clear();
-            Console.WriteLine("Say the name of player");
+            Console.WriteLine("Write the player name");
             TypePlayer player = (TypePlayer)select;
             switch (player)
             {
@@ -86,6 +87,12 @@ namespace VisualDominoes
                     {
                         string name = Console.ReadLine();
                         players.Add(new Player<TValue,T>(name, order, new BotaGordaStategies<TValue, T>()));
+                        break;
+                    }
+                case TypePlayer.AlmostClever:
+                    {
+                        string name = Console.ReadLine();
+                        players.Add(new Player<TValue,T>(name, order, new AlmostCleverStrategies<TValue, T>()));
                         break;
                     }
             }
@@ -145,7 +152,7 @@ namespace VisualDominoes
         {
             Console.Clear();
             PrintTable(Game.board);
-            Console.WriteLine("Turn the: " + Game.CurrentPlayer.Name);
+            Console.WriteLine("Player Turn: " + Game.CurrentPlayer.Name);
             Console.WriteLine();
         }
     }
