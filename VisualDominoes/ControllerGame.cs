@@ -109,6 +109,7 @@ namespace VisualDominoes
                     InterPrints.PrintHand(player.GetHand());
                 }
                 Game.CurrentTurn();
+                Console.ReadKey();
 
             } while (true);
             if (Game.Rules.IsWinner(Game.Players, out Player<TValue, T> winner))
@@ -124,7 +125,7 @@ namespace VisualDominoes
                 }
 
             }
-
+            Console.ReadKey();
             Console.Clear();
         }
     }
