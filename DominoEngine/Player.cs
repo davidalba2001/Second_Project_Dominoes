@@ -40,7 +40,6 @@ namespace DominoEngine
         {
             HandChip.Remove(chip);
         }
-
         public bool CanPlay(Board<TValue, T> board, Rules<TValue, T> rules)
         {
             foreach (var chip in HandChip)

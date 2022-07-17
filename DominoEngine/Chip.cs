@@ -15,9 +15,5 @@ namespace DominoEngine
             this.LinkR = linkR;
             this.LinkL = linkL;
         }
-        public Chip()
-        {
-            
-        }
     }
 }

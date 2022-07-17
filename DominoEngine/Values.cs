@@ -14,7 +14,7 @@ namespace DominoEngine
 
         public int Value { get; }
 
-       
+
 
         public int CompareTo(Numeric other)
         {
@@ -35,33 +35,17 @@ namespace DominoEngine
 
         public int CompareTo(IRankable? other)
         {
-            if(this.Rank() == other.Rank()) return 0;
+            if (this.Rank() == other.Rank()) return 0;
             if (this.Rank() < other.Rank()) return -1;
             return 1;
         }
 
-        public static bool operator <(Numeric value1, Numeric value2)
-        {
-            return value1.CompareTo(value2) == -1;
-        }
-        public static bool operator >(Numeric value1, Numeric value2)
-        {
-            return value1.CompareTo(value2) == 1;
-        }
-        public static bool operator ==(Numeric value1, Numeric value2)
-        {
-            return value1.CompareTo(value2) == 0;
-        }
-        public static bool operator !=(Numeric value1, Numeric value2)
-        {
-            return value1.CompareTo(value2) != 0;
-        }
     }
 
-    public class Emojis : IValue<string>,IRankable
+    public class Emojis : IValue<string>, IRankable
     {
-        public string Value{get;}
-         public Emojis(string value)
+        public string Value { get; }
+        public Emojis(string value)
         {
             Value = value;
         }
@@ -73,12 +57,14 @@ namespace DominoEngine
 
         public int Rank()
         {
-            throw new NotImplementedException();
+            return ((short)Value[0]);
         }
 
         public int CompareTo(IRankable? other)
         {
-            throw new NotImplementedException();
+            if (this.Rank() == other.Rank()) return 0;
+            if (this.Rank() < other.Rank()) return -1;
+            return 1;
         }
     }
 

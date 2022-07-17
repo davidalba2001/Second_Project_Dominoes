@@ -19,7 +19,6 @@ namespace DominoEngine
             WinConditions = winConditions;
             FinalCondition = finalCondition;
         }
-
         public bool PlayIsValid(Chip<TValue, T> chip, TValue value)
         {
             return chip.LinkL.Equals(value) || chip.LinkR.Equals(value) || value == null;
