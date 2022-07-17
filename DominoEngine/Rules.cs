@@ -33,7 +33,7 @@ namespace DominoEngine
             List<Chip<TValue, T>> Chips = new List<Chip<TValue, T>>();
             for (int i = 0; i < cant; i++)
             {
-                for (int j = 1; j < cant; j++)
+                for (int j = i; j < cant; j++)
                 {
                     Chips.Add(new Chip<TValue, T>(values[i], values[j]));
                 }
