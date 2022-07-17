@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,5 +150,104 @@ namespace DominoEngine
         }
 
     }
+    public class AlmostCleverStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
+    {
+        IValue<T> BestData;
+        List<Chip<TValue,T>> Hand;
+        Rules<TValue,T> Rules;
+        public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
+        {
+            BestData = GetBestData(player.GetHand());
+            Hand = player.GetHand();
+            Rules = rules;
+            List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
+            ValidMoves.AddRange(player.GetValidPlay(board.GetLinkR, rules));
+            if(ValidMoves.Count == 0)
+            {
+                move = default;
+                return false;
+            }
+            List<MoveWeighter> Moves = GetRankedValidMoves(ValidMoves,board).ToList();
+            move = Moves.OrderByDescending(item => item.Score).ToList()[0].Move;
+            return true;
+        }
+        private IValue<T> GetBestData(List<Chip<TValue,T>> Hand)
+        {
+            IValue<T> Data = Hand[0].LinkL;
+            int cant = 0;
+            foreach(var Chip in Hand)
+            {
+                foreach(var face in GetFaces(Chip))
+                {
+                    int count = AmountOfChips(face, Hand);
+                    if(count>cant)
+                    {
+                        cant = count;
+                        Data = face;
+                    }
+                }
+            }
+            return Data;
+        }
+        private int AmountOfChips(IValue<T> Face, List<Chip<TValue,T>> Hand)
+        {            
+            int count = 0;
+            foreach (var item in Hand)
+            {
+                if(ConteinsFace(item, Face)) count++;
+            }       
+            return count; 
+        }
+        static bool ConteinsFace(Chip<TValue,T> Chip, IValue<T> Face)
+        {
+            return Chip.LinkL.Equals(Face) || Chip.LinkR.Equals(Face);
+        }
+        private IEnumerable<IValue<T>> GetFaces(Chip<TValue,T> Chip)
+        {
+            yield return Chip.LinkL;
+            yield return Chip.LinkR;
+        }
+        private IEnumerable<MoveWeighter> GetRankedValidMoves(List<Chip<TValue,T>> ValidMoves, Board<TValue,T> board)
+        {
+            foreach(var move in ValidMoves)
+            {
+                if(Rules.PlayIsValid(move, board.GetLinkL)) yield return new MoveWeighter((move,board.GetLinkL),GetScore((move,board.GetLinkL),board));
+                if(Rules.PlayIsValid(move, board.GetLinkR)) yield return new MoveWeighter((move,board.GetLinkR),GetScore((move,board.GetLinkR),board));
+            }
+        } 
+        private double GetScore((Chip<TValue,T>, TValue) Move, Board<TValue,T> board)
+        {
+            double Score = 0;
+            int Frquence = AmountOfChips(Move.Item1.LinkL,Hand)+ AmountOfChips(Move.Item1.LinkR,Hand);
+            Score += (double)Frquence/100;
+            if(board.CountChip == 0) return Score;
+            if(Move.Item2.Equals(BestData)) Score = Score-1;
+            if(DifrentFace((Move.Item1.LinkL,Move.Item1.LinkR),Move.Item2).Equals(BestData)
+            && DifrentFace((board.GetLinkL,board.GetLinkR),Move.Item2).Equals(BestData)) Score = Score + 1;
+            return Score;
+
+        }
+        private IValue<T> DifrentFace((TValue,TValue) Faces, TValue face)
+        {
+            IValue<T> result = face;
+            if(Faces.Item1.Equals(face)) result = Faces.Item1;
+            else result = Faces.Item2;
+            return result;
+        }
+
+        private class MoveWeighter
+        {
+            public (Chip<TValue,T>, TValue) Move {get;}
+            public double Score {get;}
+
+            public MoveWeighter((Chip<TValue,T>, TValue) Move,double Score)
+            {
+                this.Move = Move;
+                this.Score = Score;
+            }
+        }
+
+    }
+
 
 }
