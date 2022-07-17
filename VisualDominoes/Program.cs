@@ -13,7 +13,10 @@ namespace VisualDominoes
         static void Main(string[] args)
         {
             ControllerGame game = new();
+            
+
             game.MakeGame();
+            
         }
     }
     

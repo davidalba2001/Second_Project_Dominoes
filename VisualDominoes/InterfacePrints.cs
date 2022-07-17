@@ -33,8 +33,58 @@ namespace VisualDominoes
         public static void Front()
         {
             Console.Clear();
-            Console.WriteLine("Welcom to Dominos");
+            string banner = @"
+██████╗  ██████╗ ███╗   ███╗██╗███╗   ██╗ ██████╗ ███████╗███████╗
+██╔══██╗██╔═══██╗████╗ ████║██║████╗  ██║██╔═══██╗██╔════╝██╔════╝
+██║  ██║██║   ██║██╔████╔██║██║██╔██╗ ██║██║   ██║█████╗  ███████╗
+██║  ██║██║   ██║██║╚██╔╝██║██║██║╚██╗██║██║   ██║██╔══╝  ╚════██║
+██████╔╝╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║╚██████╔╝███████╗███████║
+╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚══════╝
+";
+
+
+            Console.WriteLine(banner);
+            Console.WriteLine("\n");
+            BarProgress(300,100);
+            Console.Clear();
+
         }
+        private static void BarProgress(int progreso, int total = 100) //Default 100
+        {
+            //Dibujar la barra vacia
+            Console.CursorLeft = 0;
+            Console.Write(""); //inicio
+            Console.CursorLeft = 32;
+            Console.Write(""); //fin
+            Console.CursorLeft = 1; //Colocar el cursor al inicio
+            float onechunk = 30.0f / total;
+
+            //Rellenar la parte indicada
+            int position = 1;
+            for (int i = 0; i < onechunk * progreso; i++)
+            {
+                Console.BackgroundColor = ConsoleColor.Green;
+                Console.CursorLeft = position++;
+                Console.Write(" ");
+            }
+
+            //Pintar la otra parte
+            for (int i = position; i <= 31; i++)
+            {
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.CursorLeft = position++;
+                Console.Write(" ");
+            }
+
+            //Escribir el total al final
+            Console.CursorLeft = 35;
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Write(progreso.ToString() + "% de " + total.ToString() + "    ");
+        }
+
+
+
+
         public static int PrintSelect(ICollection<string> selected, string description, int count)
         {
             int select;
@@ -142,7 +192,7 @@ namespace VisualDominoes
             Console.WriteLine("------------------------------------------------------------------------------------------------------------");
             System.Console.WriteLine("\n");
             Console.ForegroundColor = ConsoleColor.White;
-            
+
         }
         public static void PrintHand<TValue, T>(List<Chip<TValue, T>> Hand) where TValue : IValue<T>
         {
@@ -160,7 +210,7 @@ namespace VisualDominoes
         }
         public static void PrintGame<TValue, T>(IGameLogic<TValue, T> Game) where TValue : IValue<T>
         {
-            
+
             Console.Clear();
             PrintTable(Game.board);
             Console.WriteLine("Player Turn: " + Game.CurrentPlayer.Name);

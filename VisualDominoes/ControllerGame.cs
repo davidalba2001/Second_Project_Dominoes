@@ -13,7 +13,7 @@ namespace VisualDominoes
         public void MakeGame()
         {
             InterPrints.Front();
-
+            
             ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
             int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version", versionDominoes.Count);
             int countLinkedValues = InterPrints.VersionChips(selectCountChip);
