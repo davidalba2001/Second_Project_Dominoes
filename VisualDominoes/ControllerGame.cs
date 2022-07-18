@@ -13,78 +13,81 @@ namespace VisualDominoes
         public void MakeGame()
         {
             InterPrints.Front();
-            
-            ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
-            int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version", versionDominoes.Count);
-            int countLinkedValues = InterPrints.VersionChips(selectCountChip);
-            int countPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of players", countLinkedValues);
-            int maxNumChip = ((countLinkedValues * (countLinkedValues + 1)) / 2) / countPlayer;
-            int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand", maxNumChip+1);
-
-            ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
-            int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type", typesGames.Count);
-            TypeGame typeGame = (TypeGame)selectTypeGame;
-            switch (typeGame)
+            while (true)
             {
-                case TypeGame.ClasicDominos:
-                    {
-                        List<Player<Numeric, int>> players = new();
-                        ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
+                ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
+                int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version", versionDominoes.Count);
+                int countLinkedValues = InterPrints.VersionChips(selectCountChip);
+                int countPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of players", countLinkedValues);
+                int maxNumChip = ((countLinkedValues * (countLinkedValues + 1)) / 2) / countPlayer;
+                int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand", maxNumChip + 1);
 
-
-                        for (int i = 0; i < countPlayer; i++)
+                ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
+                int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type", typesGames.Count);
+                TypeGame typeGame = (TypeGame)selectTypeGame;
+                switch (typeGame)
+                {
+                    case TypeGame.ClasicDominos:
                         {
-                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
-                            InterPrints.AddPlayer(players, selectTypePlayer, i);
+                            List<Player<Numeric, int>> players = new();
+                            ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
+
+
+                            for (int i = 0; i < countPlayer; i++)
+                            {
+                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
+                                InterPrints.AddPlayer(players, selectTypePlayer, i);
+                            }
+                            IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                            IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                            Rules<Numeric, int> rules = new(winConditions, finalConditions);
+                            ClassicGameLogic<Numeric, int> gameLogic = new(countLinkedValues, rules, Values.ValuesNumerics, players);
+                            NewGame<Numeric, int>(gameLogic, numChipForPlayer);
+                            break;
                         }
-                        IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                        IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                        Rules<Numeric, int> rules = new(winConditions, finalConditions);
-                        ClassicGameLogic<Numeric, int> gameLogic = new(countLinkedValues, rules, Values.ValuesNumerics, players);
-                        NewGame<Numeric, int>(gameLogic, numChipForPlayer);
-                        break;
-                    }
-                case TypeGame.PrittyBoy:
-                    {
-                        List<Player<Emojis, string>> emoplayer = new();
-                        ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
-                        for (int i = 0; i < countPlayer; i++)
+                    case TypeGame.PrittyBoy:
                         {
-                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
-                            InterPrints.AddPlayer(emoplayer, selectTypePlayer, i);
-                        }
-                        IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
-                        IEndCondition<Emojis, string>[] finalConditions = { new IsLocked<Emojis, string>(), new PlayAllChips<Emojis, string>() };
-                        Rules<Emojis, string> rules = new(winConditions, finalConditions);
-                        ClassicGameLogic<Emojis, string> gameLogic = new(countLinkedValues, rules, Values.ValuesEmojis, emoplayer);
+                            List<Player<Emojis, string>> emoplayer = new();
+                            ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
+                            for (int i = 0; i < countPlayer; i++)
+                            {
+                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
+                                InterPrints.AddPlayer(emoplayer, selectTypePlayer, i);
+                            }
+                            IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
+                            IEndCondition<Emojis, string>[] finalConditions = { new IsLocked<Emojis, string>(), new PlayAllChips<Emojis, string>() };
+                            Rules<Emojis, string> rules = new(winConditions, finalConditions);
+                            ClassicGameLogic<Emojis, string> gameLogic = new(countLinkedValues, rules, Values.ValuesEmojis, emoplayer);
 
-                        NewGame<Emojis, string>(gameLogic, numChipForPlayer);
-                        break;
-                    }
-                case TypeGame.Stolen:
-                    {
-                        List<Player<Numeric, int>> players = new();
-                        ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
-                        for (int i = 0; i < countPlayer; i++)
+                            NewGame<Emojis, string>(gameLogic, numChipForPlayer);
+                            break;
+                        }
+                    case TypeGame.Stolen:
                         {
-                            int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
-                            InterPrints.AddPlayer(players, selectTypePlayer, i);
+                            List<Player<Numeric, int>> players = new();
+                            ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
+                            for (int i = 0; i < countPlayer; i++)
+                            {
+                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
+                                InterPrints.AddPlayer(players, selectTypePlayer, i);
+                            }
+                            IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                            IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                            Rules<Numeric, int> rules = new(winConditions, finalConditions);
+                            StolenLogic<Numeric, int> gameLogic = new StolenLogic<Numeric, int>(countLinkedValues, rules, Values.ValuesNumerics, players);
+
+                            NewGame<Numeric, int>(gameLogic, numChipForPlayer);
+                            break;
                         }
-                        IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                        IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                        Rules<Numeric, int> rules = new(winConditions, finalConditions);
-                        StolenLogic<Numeric, int> gameLogic = new StolenLogic<Numeric, int>(countLinkedValues, rules, Values.ValuesNumerics, players);
-
-                        NewGame<Numeric, int>(gameLogic, numChipForPlayer);
-                        break;
-                    }
-
-
-
-
-
-
+                }
+                int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar", 2);
+                switch (key)
+                {
+                    case 1:
+                        return;
+                }
             }
+
         }
         public void NewGame<TValue, T>(IGameLogic<TValue, T> Game, int numChipPlayer) where TValue : IValue<T>
         {
