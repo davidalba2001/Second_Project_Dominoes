@@ -80,12 +80,8 @@ namespace VisualDominoes
                             break;
                         }
                 }
-                int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar", 2);
-                switch (key)
-                {
-                    case 1:
-                        return;
-                }
+                int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar?", 2);
+                if(key == 1) return;
             }
 
         }
