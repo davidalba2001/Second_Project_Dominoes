@@ -11,8 +11,6 @@ namespace VisualDominoes
         Doble9,
         Doble10,
     }
-
-
     enum TypePlayer
     {
         HumanPlayer,
@@ -41,13 +39,10 @@ namespace VisualDominoes
 ██████╔╝╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║╚██████╔╝███████╗███████║
 ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚══════╝
 ";
-
-
             Console.WriteLine(banner);
             Console.WriteLine("\n");
             BarProgress(300,100);
             Console.Clear();
-
         }
         private static void BarProgress(int progreso, int total = 100) //Default 100
         {
@@ -81,10 +76,6 @@ namespace VisualDominoes
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Write(progreso.ToString() + "% de " + total.ToString() + "    ");
         }
-
-
-
-
         public static int PrintSelect(ICollection<string> selected, string description, int count)
         {
             int select;
@@ -147,8 +138,6 @@ namespace VisualDominoes
                     }
             }
         }
-
-
         public static int VersionChips(int select)
         {
 
@@ -179,8 +168,8 @@ namespace VisualDominoes
             List<TValue> Table = table.GetBoard();
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("Table");
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("------------------------------------------------------------------------");
+            Console.WriteLine("------------------------------------------------------------------------");
             if (Table.Count == 0) Console.WriteLine("Table Is Empty");
 
             for (int i = 0; i < Table.Count; i = i + 2)
@@ -188,9 +177,9 @@ namespace VisualDominoes
                 Console.Write("[" + Table[i].Value + "|" + Table[i + 1].Value + "]");
             }
             System.Console.WriteLine("\n");
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
-            Console.WriteLine("------------------------------------------------------------------------------------------------------------");
             System.Console.WriteLine("\n");
+            Console.WriteLine("------------------------------------------------------------------------");
+            Console.WriteLine("------------------------------------------------------------------------");
             Console.ForegroundColor = ConsoleColor.White;
 
         }
@@ -219,4 +208,3 @@ namespace VisualDominoes
         }
     }
 }
-
