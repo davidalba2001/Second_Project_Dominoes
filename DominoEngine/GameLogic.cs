@@ -153,9 +153,18 @@ namespace DominoEngine
                     Last = i * CountChip + j;
                     PlayerHand.Add(Randomized[i * CountChip + j++]);
                 }
-                Players[i].TakeHandChip(PlayerHand);
-                Chips = Randomized.Take(new Range(Last, CountChip)).ToList();       
+                Players[i].TakeHandChip(PlayerHand);    
             }
+            Chips = After(Randomized, Last);
+        }
+        private List<Chip<TValue,T>> After(List<Chip<TValue,T>> list, int pos)
+        {
+            List<Chip<TValue,T>> result = new();
+            for (int i = pos+1; i < list.Count; i++)
+            {
+                result.Add(list[i]);
+            }
+            return result;
         }
     }
 

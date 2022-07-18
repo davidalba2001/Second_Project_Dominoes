@@ -18,8 +18,8 @@ namespace VisualDominoes
             int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version", versionDominoes.Count);
             int countLinkedValues = InterPrints.VersionChips(selectCountChip);
             int countPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of players", countLinkedValues);
-            int maxNumChip = ((countLinkedValues * countLinkedValues + 1) / 2) / countPlayer;
-            int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand", maxNumChip);
+            int maxNumChip = ((countLinkedValues * (countLinkedValues + 1)) / 2) / countPlayer;
+            int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand", maxNumChip+1);
 
             ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
             int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type", typesGames.Count);
