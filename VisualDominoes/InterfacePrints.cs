@@ -82,7 +82,7 @@ namespace VisualDominoes
             bool isNumeric;
             Console.Clear();
             Console.WriteLine(description);
-            Console.WriteLine("Select: ");
+            Console.WriteLine("Press: ");
             int i = 0;
             if (selected.Count > 0)
             {
