@@ -152,12 +152,12 @@ namespace DominoEngine
     }
     public class AlmostCleverStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
     {
-        IValue<T> BestData;
+        List<IValue<T>> BestData= new();
         List<Chip<TValue,T>> Hand;
         Rules<TValue,T> Rules;
         public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
-            BestData = GetBestData(player.GetHand());
+            GetBestData(player.GetHand());
             Hand = player.GetHand();
             Rules = rules;
             List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
@@ -171,9 +171,8 @@ namespace DominoEngine
             move = Moves.OrderByDescending(item => item.Score).ToList()[0].Move;
             return true;
         }
-        private IValue<T> GetBestData(List<Chip<TValue,T>> Hand)
+        private void GetBestData(List<Chip<TValue,T>> Hand)
         {
-            IValue<T> Data = Hand[0].LinkL;
             int cant = 0;
             foreach(var Chip in Hand)
             {
@@ -183,11 +182,10 @@ namespace DominoEngine
                     if(count>cant)
                     {
                         cant = count;
-                        Data = face;
+                        BestData.Add(face);
                     }
                 }
             }
-            return Data;
         }
         private int AmountOfChips(IValue<T> Face, List<Chip<TValue,T>> Hand)
         {            
@@ -222,8 +220,8 @@ namespace DominoEngine
             Score += (double)Frquence/100;
             if(board.CountChip == 0) return Score;
             if(Move.Item2.Equals(BestData)) Score = Score-1;
-            if(DifrentFace((Move.Item1.LinkL,Move.Item1.LinkR),Move.Item2).Equals(BestData)
-            && DifrentFace((board.GetLinkL,board.GetLinkR),Move.Item2).Equals(BestData)) Score = Score + 1;
+            if(BestData.Contains(DifrentFace((Move.Item1.LinkL,Move.Item1.LinkR),Move.Item2))
+            &&  BestData.Contains(DifrentFace((board.GetLinkL,board.GetLinkR),Move.Item2))) Score = Score + 1;
             return Score;
 
         }
