@@ -174,18 +174,27 @@ namespace DominoEngine
         private void GetBestData(List<Chip<TValue,T>> Hand)
         {
             int cant = 0;
+            List<IValue<T>> Data = new();
             foreach(var Chip in Hand)
             {
                 foreach(var face in GetFaces(Chip))
                 {
                     int count = AmountOfChips(face, Hand);
-                    if(count>cant)
+                    if(count>=cant)
                     {
                         cant = count;
-                        BestData.Add(face);
                     }
                 }
+                foreach(var face in GetFaces(Chip))
+                {
+                    if(AmountOfChips(face, Hand) == cant)
+                    {
+                        Data.Add(face);
+                    }
+                }
+                
             }
+            BestData = Data;
         }
         private int AmountOfChips(IValue<T> Face, List<Chip<TValue,T>> Hand)
         {            
