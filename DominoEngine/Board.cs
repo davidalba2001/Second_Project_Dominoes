@@ -8,14 +8,17 @@ namespace DominoEngine
 {
     public class Board<TValue,T> where TValue:IValue<T>
     {
-        private LinkedList<TValue> BoardChips = new LinkedList<TValue>();
+        //Esta LinkedList hace funcion de mesa guardando las fichas jugadas en el orden en que se juegan
+        private LinkedList<TValue> BoardChips = new LinkedList<TValue>(); 
         public List<TValue> GetBoard()
         {
             return BoardChips.ToList();
         }
         public int CountChip => BoardChips.Count;
+        // GetLinkR y GetLinkL se usan para acceder mas facil a las caras enlazables de la mesa
         public TValue? GetLinkR => BoardChips.LastOrDefault();
         public TValue? GetLinkL => BoardChips.FirstOrDefault();
+        // Este metodo agrega la ficha jugada a la mesa, dejando la cara correcta libre para enlazar
         public void AddChip((Chip<TValue,T>,TValue) move)
         {
             if (CountChip == 0)
@@ -53,6 +56,7 @@ namespace DominoEngine
                 }
 
             }
+
         }
     }
 }

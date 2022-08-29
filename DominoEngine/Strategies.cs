@@ -253,8 +253,7 @@ namespace DominoEngine
                 this.Score = Score;
             }
         }
-
+        
     }
-
 
 }
