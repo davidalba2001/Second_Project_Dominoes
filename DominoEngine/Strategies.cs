@@ -14,28 +14,32 @@ namespace DominoEngine
             bool canPlay = false;
             int pos;
             Chip<TValue, T> move;
-
+            // Primero verifica si hay fichas en el tablero
             if (board.CountChip != 0)
             {
+                // Aqui guardo en una variable booleana si existen jugadas validas
                 canPlay = player.CanPlay(board, rules);
+                // si no existe devuelve false directamente
                 if (!canPlay)
                 {
                     value = default((Chip<TValue, T>, TValue));
                     return canPlay;
                 }
-                // Esto en interface grafica creo que seria un metodo con  un evento click a una fichha y esa ficha se devuelva
                 bool IsValidMove;
                 do
                 {
                     bool isNumeric;
                     do
                     {
+                        // Pegunta al usuario por la ficha que desea jugar
                         Console.WriteLine("Chouse a number between 0 and " + (player.NumChips - 1) + " dependig of the position of the chip you wanna play");
+                        // Si la respuesta no es numerica guarda false en IsNumeric para volver a preguntar por la ficha que desea jugar
                         isNumeric = int.TryParse(Console.ReadLine(), out pos);
                         if (!isNumeric) Console.WriteLine("String is not a numeric representation");
                     } while (!isNumeric || (pos >= player.NumChips || pos < 0));
-
+                    // Guarda la posision dada luego de sabe que es una posision valida
                     move = player.GetChipInPos(pos);
+                    // Revisa que la ficha pueda jugarse correctamente, de lo contrario se repite el ciclo
                     IsValidMove = rules.PlayIsValid(move, board.GetLinkL) || rules.PlayIsValid(move, board.GetLinkR);
                     if (!IsValidMove) Console.WriteLine("Is not valid");
                 } while (!IsValidMove);
@@ -72,7 +76,7 @@ namespace DominoEngine
                 value = (move, board.GetLinkL);
                 return true;
             }
-
+            // esto es en el caso de que sea la priera jugada
             else
             {
                 bool isNumeric;
@@ -89,6 +93,7 @@ namespace DominoEngine
     }
     public class RandomStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
     {
+        // Guarda las jugadas validas en una lista, las ramdomiza y devuelve la 1era ficha
         public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board,Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
             List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
@@ -114,6 +119,7 @@ namespace DominoEngine
     }
     public class BotaGordaStategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>, IRankable
     {
+        // Guarda las jugadas validas en una lista, que organiza de mayor a menor segun el valor de la ficha, y devuelve la 1era fcha
         public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
             List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
@@ -152,22 +158,29 @@ namespace DominoEngine
     }
     public class AlmostCleverStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
     {
+        // Lista de caras cuya frecuencia sea igual a la maxima frecuencia de caras en la mano
         List<IValue<T>> BestData= new();
         List<Chip<TValue,T>> Hand;
         Rules<TValue,T> Rules;
         public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
+            // Actualiza BestData con la mano que le queda
             GetBestData(player.GetHand());
             Hand = player.GetHand();
             Rules = rules;
+            //Guarda las jugadas Validas en una lista 
             List<Chip<TValue, T>> ValidMoves = player.GetValidPlay(board.GetLinkL, rules);
             ValidMoves.AddRange(player.GetValidPlay(board.GetLinkR, rules));
+            // si no hay jugadas validas es que no lleva y devuelve false directamente
             if(ValidMoves.Count == 0)
             {
                 move = default;
                 return false;
             }
+            //Le asigna a cada jugada valida un valor dependiendo de la camtidad de fichas que tiene
+            //En caso de que la ficha doble la mesa a la cara que mas tiene, la jugada obtiene el mejor score
             List<MoveWeighter> Moves = GetRankedValidMoves(ValidMoves,board).ToList();
+            //Ordena las fichas por score de mayor a menor y devuelve la 1era
             move = Moves.OrderByDescending(item => item.Score).ToList()[0].Move;
             return true;
         }
