@@ -15,6 +15,10 @@ namespace VisualDominoes
             InterPrints.Front();
             while (true)
             {
+                //--------------------------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------------------
+                //Bloque de construcción del juego
+                //Aqui se le pregunta al usuario por preferencias de juego guardando las respuestas
                 ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
                 int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version", versionDominoes.Count);
                 int countLinkedValues = InterPrints.VersionChips(selectCountChip);
@@ -25,6 +29,9 @@ namespace VisualDominoes
                 ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
                 int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type", typesGames.Count);
                 TypeGame typeGame = (TypeGame)selectTypeGame;
+                //--------------------------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------------------
+                //Aqui se construye el juego segun las respuestas del usuario
                 switch (typeGame)
                 {
                     case TypeGame.ClasicDominos:
@@ -42,6 +49,7 @@ namespace VisualDominoes
                             IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                             Rules<Numeric, int> rules = new(winConditions, finalConditions);
                             ClassicGameLogic<Numeric, int> gameLogic = new(countLinkedValues, rules, Values.ValuesNumerics, players);
+                            //Echa a andar el juego
                             NewGame<Numeric, int>(gameLogic, numChipForPlayer);
                             break;
                         }
@@ -80,6 +88,9 @@ namespace VisualDominoes
                             break;
                         }
                 }
+                //--------------------------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------------------
+                //Cuando termina el juego se le pregunta al usuario si desea jugar de nuevo
                 int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar?", 2);
                 if(key == 1) return;
             }
@@ -88,16 +99,21 @@ namespace VisualDominoes
         public void NewGame<TValue, T>(IGameLogic<TValue, T> Game, int numChipPlayer) where TValue : IValue<T>
         {
 
-            //TODO: tengo que hacer el calculo para valanciar fichas cant y jugadores cant;
+            //Genera las fichas
             Game.HandOutChips(numChipPlayer);
 
             do
             {
+                 //Busca al jugador que le toca jugar(al que le toca y no esta pasado y pasa y pasa de turno si al jugador que le toca no puede jugar)
                 Game.ChangeValidCurrentPlayer();
+                 //Pregunta si ya se acabo el juego
                 if (Game.EndGame())
                 {
                     break;
                 }
+                //-----------------------------------------------------------------------------------------
+                //-----------------------------------------------------------------------------------------
+                //Bloque de impresiones
                 InterPrints.PrintGame(Game);
                 InterPrints.PrintHand(Game.CurrentPlayer.GetHand());
                 Console.WriteLine("\n");
@@ -111,14 +127,19 @@ namespace VisualDominoes
                 }
                 Console.WriteLine("---------------------------------------------------------------------");
                 Console.WriteLine("---------------------------------------------------------------------");
+                //-----------------------------------------------------------------------------------------
+                //-----------------------------------------------------------------------------------------
+                //ejecuta todo lo que pasa en un turno
                 Game.CurrentTurn();
                 Console.ReadKey();
 
             } while (true);
+            // busca si hay un ganador
             if (Game.Rules.IsWinner(Game.Players, out Player<TValue, T> winner))
             {
                 Console.WriteLine("The winner is " + winner.Name);
             }
+            //busca si hay un empate
             if (Game.Rules.IsTie(Game.Players, out List<Player<TValue, T>> winners))
             {
                 Console.WriteLine("Tie");

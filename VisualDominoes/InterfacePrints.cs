@@ -4,6 +4,7 @@ using DominoEngine.Interfaces;
 
 namespace VisualDominoes
 {
+    // Opciones de la versión
     enum VersionDomioes
     {
         Doble7,
@@ -11,6 +12,7 @@ namespace VisualDominoes
         Doble9,
         Doble10,
     }
+    // Tipo de palyer  
     enum TypePlayer
     {
         HumanPlayer,
@@ -19,6 +21,7 @@ namespace VisualDominoes
         AlmostClever,
 
     }
+    //Tipo de juego 
     enum TypeGame
     {
         ClasicDominos,
@@ -28,6 +31,7 @@ namespace VisualDominoes
 
     public static class InterPrints
     {
+        //Imprime la parte frontal de juego(Primera portada)
         public static void Front()
         {
             Console.Clear();
@@ -44,6 +48,7 @@ namespace VisualDominoes
             BarProgress(300,100);
             Console.Clear();
         }
+        //Imprime la barra de progreso que se muestra al inicio
         private static void BarProgress(int progreso, int total = 100) //Default 100
         {
             //Dibujar la barra vacia
@@ -76,6 +81,7 @@ namespace VisualDominoes
             Console.BackgroundColor = ConsoleColor.Black;
             Console.Write(progreso.ToString() + "% de " + total.ToString() + "    ");
         }
+        //Selector (Imprime devuelve e interactuá con la entrada de la selecciones del usuario)
         public static int PrintSelect(ICollection<string> selected, string description, int count)
         {
             int select;
@@ -105,6 +111,7 @@ namespace VisualDominoes
             } while (!isNumeric || select >= count || select < 0);
             return select;
         }
+        //Menú para construir la lista de jugadores según la opción
         public static void AddPlayer<TValue, T>(List<Player<TValue, T>> players, int select, int order) where TValue : IValue<T>, IRankable
         {
             Console.Clear();
@@ -138,6 +145,7 @@ namespace VisualDominoes
                     }
             }
         }
+        // Según la opción elegida permite tomar el numero de caras del domino
         public static int VersionChips(int select)
         {
 
@@ -163,6 +171,7 @@ namespace VisualDominoes
                 default: return -1;
             }
         }
+        // Imprime la mesa
         public static void PrintTable<TValue, T>(Board<TValue, T> table) where TValue : IValue<T>
         {
             List<TValue> Table = table.GetBoard();
@@ -183,6 +192,7 @@ namespace VisualDominoes
             Console.ForegroundColor = ConsoleColor.White;
 
         }
+        //Imprime las manos
         public static void PrintHand<TValue, T>(List<Chip<TValue, T>> Hand) where TValue : IValue<T>
         {
             Console.WriteLine("Hand:");
@@ -197,6 +207,7 @@ namespace VisualDominoes
             }
             System.Console.WriteLine();
         }
+        //Imprime las secuencia del juego
         public static void PrintGame<TValue, T>(IGameLogic<TValue, T> Game) where TValue : IValue<T>
         {
 
