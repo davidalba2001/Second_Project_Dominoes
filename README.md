@@ -17,7 +17,7 @@ La aplicación está dividida en dos componentes fundamentales:
 
 El Juego comienza con una presentación luego deberá modelar el juego mediante una serie de elecciones
 
-**Primera Eleccion:**
+**Primera Elección:**
 
 Debe seleccionar uno de los números de al lado para elegir la variante del domino (Ejemplo: 2 para la versión doble 9)
 
@@ -42,7 +42,7 @@ Tipo de juego (Consta con tres variaciones de domino)
 - 1 Pretty Boy (Domino de figuritas)
 - 2 Sloten (Domino Robaito)
 
-**La Quinta elección:**
+**La Quinta Elección:**
 
 Seleccionar el tipo de player que jugara; cada vez que seleccione un jugador este le pedirá un identificador o nombre
 
@@ -57,8 +57,12 @@ Seleccionar el tipo de player que jugara; cada vez que seleccione un jugador est
 ![](Screenshots/PrintGame.png)
 
 ![](Screenshots/Hands.png)
+# **Analisis de proyecto**
+El proyecto cuenta de una estructura ficha que esta de compuesta de dos valores,que podemos hacer variar, cuando variamos el valor podemos tener fichas de figuras,colores,números etc... Tiene una clase mesa que almacena las fichas que serán jugadas. Contiene una clase jugador con una lista de fichas, y una estrategia que se le pasa al constructor,esta determina como jugara este "random ,"bota-gordas".
+Tenemos la clase reglas, que determinan un conjunto de utilidades. Ejemplo: Comprueba si es el turno de un jugador , si hay final, si existe un ganador,si hay empate,si una jugada es valida y genera las fichas. Las reglas del juego son modeladas a través de las clases que implementan condiciones de finalización y de ganador,que se les pasan en el constructor, lo cual nos permite hacer variar en parte como se desarrolla la partida. Las Clases que implementan GameLogic tienen métodos que permiten cambiar de jugador, a uno valido (Busca al jugador que le toca, si este no puede jugar, lo pasa ,cambia el turno y repite el proceso hasta encontrarlo), contiene un método que desarrolla el proceso del turno actual (Pedirle al jugador actual una jugada,añadir a la mesa,quitarla de la mano y pasar turno). Esto no se desarrolla de forma igual en todos los juegos, por eso lo consideramos como un aspecto a variar en la construcción de una nueva lógica de juego,en otras variantes como el robaito este método modela algunos cambios, como es la cuestión de que si el jugador no lleva, roba hasta que pueda jugar. Hay un método que dice si hay final lo cual es determinado por las reglas que sean pasadas a la lógica de juego,otro método que nos pareció necesario variar fue la forma de repartir las fichas.
+El juego se desarrolla repitiendo un ciclo. Buscar un jugador valido, preguntar si hay final, desarrollar lo que pasa en el turno actual y repetir hasta que se termina el juego luego tenemos un ganador o un empate.  
 
-# Sobre la ingeniería de software
+# **Sobre la ingeniería de software**
 
 **Para implementar la lógica del los juegos hemos implementado varias varias interfaces fundamentales:**
 
@@ -68,7 +72,23 @@ public interface IEndCondition<TValue, T> where TValue :IValue<T>
     public bool IsFinal(List<Player<TValue, T>> players);
 }
 ```
-> Quien implemente la interfaz deberá implementar un método que servirá de condición de finalización que recibe una lista de jugadores y devuelve ***`true`*** si se cumple determinada condición
+> Quien implemente la interfaz deberá implementar un método que servirá de condición de finalización esto nos permitirá crear variaciones de las misma. Recibe una lista de jugadores y devuelve ***`true`*** si se cumple determinada condición
+
+**Ejemplo de Clase que implementa la interface:**
+```cs
+public class IsLocked<TValue, T> : IEndCondition<TValue, T> where TValue : IValue<T>
+    {
+        public bool IsFinal(List<Player<TValue, T>> players)
+        {
+            foreach (var item in players)
+            {
+                if (!item.Pass) return false;
+            }
+            return true;
+        }
+    }
+```
+> `IsLocked` implementa la condición de finalización de un juego trancado y esto pasa cuando todos los jugadores están pasados
 
 ```cs
 public interface IWinCondition<TValue,T> where TValue : IValue<T>
@@ -76,22 +96,29 @@ public interface IWinCondition<TValue,T> where TValue : IValue<T>
     public bool IsWinner(Player<TValue,T> player,List<Player<TValue,T>> players);
 }
 ```
-> Quien implemente la interfaz deberá implementar un método que servirá de condición para determinar si un jugador es ganador recibe un jugador y una lista de jugadores y devuelve ***`true`*** si se cumple determinada condición
+> Quien implemente la interfaz deberá implementar un método que servirá de condición para determinar si un jugador es ganador y permitirá crear distintas formas en las que un jugador gana por ejemplo en un juego donde las fichas tiene caras contables como números una posible forma de ganar puede ser por cantidad de puntos el que mas tenga gana en una variante donde las caras son figuras o colores una posible condición de ganar es el jugador que primero se quede sin fichas. El método Recibe un jugador y una lista de jugadores y devuelve ***`true`*** si se cumple determinada condición.
+
+**Ejemplo de Clase que implementa la interface:**
+```cs
+  public class WinnerByChips<TValue, T> : IWinCondition<TValue, T> where TValue : IValue<T>
+    {
+        public bool IsWinner(Player<TValue, T> player, List<Player<TValue, T>> players)
+        {
+            return (player.NumChips == players.Min(x => x.NumChips));
+        }
+    }
+```
+> WinnerByChips implementa un criterio de ser ganador basado en la cantidad de fichas si el jugador que se le pasa es el que menor cantidad de fichas tiene entonces este puede ser un posible ganador 
+
+> `Nota:`Las condiciones de ganador y de finalización se conjuntan para buscar el estado de finalización del juego. No implementamos simplemente una condición de finalización porque nos parecía atractiva la idea para mejoras y extensión del proyecto que el jugador usando condiciones de ganador pudiera "ganar" algo por determinadas acciones independientes al fin. Ejemplo ganar 5 puntos cada vez que el próximo jugador se pase esto es a criterio de la variante de domino que se desea implementar.
+
 ```cs
 public interface IValue<T> : IEquatable<IValue<T>>
 {
     public T? Value { get; }
 }
 ```
-
 >`IValue` esta interface tiene un parámetro genérico ***Value*** que básicamente es el valor de una de las caras de las fichas estas interface implementa `IEquatable<IValue<T>>` que me permite determinar si dos `IValue` son iguales.
-```cs
-public interface IStrategy<TValue, T> where TValue : IValue<T>
-{
-    public bool ValidMove(Player<TValue, T> player,Board<TValue, T> board, Rules<TValue, T> rules,out(Chip<TValue, T>,TValue) move);
-}
-```
-> Quien implementa la interface `IStrategy` debe implementar método que definirá la forma en que un jugador se juega, que se le pasa un jugador la mesa y las reglas y este devuelve como salida principal la si el jugador puede jugar y como salida secundaria usando el `out:` una tupla que en la primera posición devuelve la ficha que jugara y en la segunda la cara por donde  jugar la ficha,
 
 ```cs
 public interface IRankable: IComparable<IRankable>
@@ -100,6 +127,44 @@ public interface IRankable: IComparable<IRankable>
 }
 ```
 >`IRankeble` esta creado con el objetivo de que sea implementado por un objeto que representa la cara de una ficha este deberá implementar un método `Rank()` que asignar un racking (que tan grande es ese valor) la utilidad de esto es que permitirá hacer que un jugador bota-gorda pueda jugar con tipos de Values no numéricos
+
+**Ejemplo de Clase que implementa la interface:**
+
+```cs
+public class Emojis : IValue<string>, IRankable
+{
+    public Emojis(string value)
+    {
+        Value = value;
+    }
+
+    public bool Equals(IValue<string>? other)
+    {
+        return object.Equals(this, other);
+    }
+
+    public int Rank()
+    {
+        return ((short)Value[0]);
+    }
+
+    public int CompareTo(IRankable? other)
+    {
+        if (this.Rank() == other.Rank()) return 0;
+        if (this.Rank() < other.Rank()) return -1;
+        return 1;
+    }
+}
+```
+>Esta clase fue creada para representar una de las cara de la ficha solo podrá mostrase en Ubuntu debido a que fue creada para almacenar emojis y estos no se visualizan en la consola de Windows esta clase implementa `IValue<string>`, `IRankable` esto nos da una estructura que el valor es lo que mostrara como cara y Rank devuelve un valor que permite comparar los valores de las caras 
+
+```cs
+public interface IStrategy<TValue, T> where TValue : IValue<T>
+{
+    public bool ValidMove(Player<TValue, T> player,Board<TValue, T> board, Rules<TValue, T> rules,out(Chip<TValue, T>,TValue) move);
+}
+```
+> Quien implementa la interface `IStrategy` debe implementar método que definirá la forma en que un jugador se juega por ejemplo un jugador que juega las fichas con preferencia de la mayor se conoce como bota-gorda. Se le pasa un jugador,la mesa y las reglas y este devuelve como salida principal la si el jugador puede jugar y como salida secundaria usando el `out:` una tupla que en la primera posición devuelve la ficha que jugara y en la segunda la cara por donde  jugar la ficha,
 
 ```cs
 public interface IGameLogic<TValue,T> where TValue:IValue<T>
@@ -130,7 +195,7 @@ void HandOutChips(int CountChip);
 ```cs
 public class Player<TValue, T> where TValue : IValue<T>
     {
-        // Estrategia que implemeta el jugador
+        // Estrategia que implementa el jugador
         protected IStrategy<TValue, T> Strategy;
         // Estado del jugador si se paso o no 
         public bool Pass { get; set; }
@@ -589,7 +654,6 @@ enum VersionDomioes
 ```
 
 > Si implementa un nuevo juego y desea añadirlo solo debe agregar sus opciones al los enums e implementar un nuevo caso en el switch correspondiente para esta elección
-
 # Posibles mejoras a deficiencias 
 - Como posibles mejoras esta la optimización e implementación de mas variantes de juegos.
 
