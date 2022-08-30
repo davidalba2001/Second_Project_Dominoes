@@ -33,7 +33,7 @@ namespace DominoEngine
                         Console.WriteLine("Chouse a number between 0 and " + (player.NumChips - 1) + " dependig of the position of the chip you wanna play");
                         isNumeric = int.TryParse(Console.ReadLine(), out pos);
                         if (!isNumeric) Console.WriteLine("String is not a numeric representation");
-                    } while (!isNumeric);
+                    } while (!isNumeric || (pos >= player.NumChips || pos < 0));
 
                     move = player.GetChipInPos(pos);
                     IsValidMove = rules.PlayIsValid(move, board.GetLinkL) || rules.PlayIsValid(move, board.GetLinkR);
@@ -78,10 +78,10 @@ namespace DominoEngine
                 bool isNumeric;
                 do
                 {
-                    Console.WriteLine("Chouse a number between 0 and " + player.NumChips + "dependig of the position of the chip you wanna play");
+                    Console.WriteLine("Chouse a number between 0 and " + (player.NumChips-1) + " dependig of the position of the chip you wanna play");
                     isNumeric = int.TryParse(Console.ReadLine(), out pos);
                     if (!isNumeric) Console.WriteLine("String is not a numeric representation");
-                } while (!isNumeric);
+                } while (!isNumeric || (pos >= player.NumChips || pos < 0));
                 value = (player.GetChipInPos(pos), default(TValue));
                 return true;
             }
