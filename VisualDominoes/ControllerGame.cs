@@ -20,14 +20,14 @@ namespace VisualDominoes
                 //Bloque de construcción del juego
                 //Aqui se le pregunta al usuario por preferencias de juego guardando las respuestas
                 ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
-                int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version", versionDominoes.Count);
+                int selectCountChip = InterPrints.PrintSelect(versionDominoes, "Domino Version",0, versionDominoes.Count);
                 int countLinkedValues = InterPrints.VersionChips(selectCountChip);
-                int countPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of players", countLinkedValues);
+                int countPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of players",1, countLinkedValues);
                 int maxNumChip = ((countLinkedValues * (countLinkedValues + 1)) / 2) / countPlayer;
-                int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand", maxNumChip + 1);
+                int numChipForPlayer = InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand",1, maxNumChip + 1);
 
                 ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
-                int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type", typesGames.Count);
+                int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type",0, typesGames.Count);
                 TypeGame typeGame = (TypeGame)selectTypeGame;
                 //--------------------------------------------------------------------------------------------------------
                 //--------------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ namespace VisualDominoes
 
                             for (int i = 0; i < countPlayer; i++)
                             {
-                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
+                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type",0, typePlayer.Count);
                                 InterPrints.AddPlayer(players, selectTypePlayer, i);
                             }
                             IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
@@ -59,7 +59,7 @@ namespace VisualDominoes
                             ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
                             for (int i = 0; i < countPlayer; i++)
                             {
-                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
+                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type",0, typePlayer.Count);
                                 InterPrints.AddPlayer(emoplayer, selectTypePlayer, i);
                             }
                             IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
@@ -76,7 +76,7 @@ namespace VisualDominoes
                             ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
                             for (int i = 0; i < countPlayer; i++)
                             {
-                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type", typePlayer.Count);
+                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type",0, typePlayer.Count);
                                 InterPrints.AddPlayer(players, selectTypePlayer, i);
                             }
                             IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
@@ -91,7 +91,7 @@ namespace VisualDominoes
                 //--------------------------------------------------------------------------------------------------------
                 //--------------------------------------------------------------------------------------------------------
                 //Cuando termina el juego se le pregunta al usuario si desea jugar de nuevo
-                int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar?", 2);
+                int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar?",0, 2);
                 if(key == 1) return;
             }
 

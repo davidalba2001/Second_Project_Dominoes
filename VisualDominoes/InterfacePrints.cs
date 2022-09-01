@@ -82,7 +82,7 @@ namespace VisualDominoes
             Console.Write(progreso.ToString() + "% de " + total.ToString() + "    ");
         }
         //Selector (Imprime devuelve e interactuá con la entrada de la selecciones del usuario)
-        public static int PrintSelect(ICollection<string> selected, string description, int count)
+        public static int PrintSelect(ICollection<string> selected, string description,int min, int count)
         {
             int select;
             bool isNumeric;
@@ -104,11 +104,11 @@ namespace VisualDominoes
                 if (!isNumeric || select >= count || select < 0)
                 {
                     Console.WriteLine("Seleccion incorrecta");
-                    Console.WriteLine("El tipo debe ser numerico y estar en el rago " + "(0 -" + (count - 1) + ")");
+                    Console.WriteLine("El tipo debe ser numerico y estar en el rago " + "("+ min + " -- " + (count - 1) + ")");
                     Console.WriteLine("Seleccione otro numero");
 
                 }
-            } while (!isNumeric || select >= count || select < 0);
+            } while (!isNumeric || select >= count || select < min);
             return select;
         }
         //Menú para construir la lista de jugadores según la opción
