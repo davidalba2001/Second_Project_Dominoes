@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DominoEngine.Interfaces
 {
-    public delegate bool Move(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules,
-        out (Chip<TValue, T>, TValue) value);
+    public delegate bool AskHumanNextPlay<TValue, T>(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules,
+        out (Chip<TValue, T>, TValue) value) where TValue : IValue<T>;
 
     public interface IStrategy<TValue, T> where TValue : IValue<T>
     {

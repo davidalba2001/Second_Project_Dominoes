@@ -9,8 +9,8 @@ namespace DominoEngine
 {
     public class HumanStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
     {
-        private AskNextHumanPlay Paly;
-        public HumanStrategies(AskNextHumanPlay move)
+        private AskHumanNextPlay<TValue, T> Play;
+        public HumanStrategies(AskHumanNextPlay<TValue, T> move)
         {
             Play = move;
         }

@@ -13,61 +13,42 @@ namespace VisualDominoes
         public void MakeGame()
         {
             InterPrints.Front();
-            (int CountChip, int LinkedValues, int countPlayer, int maxNumChip, int ChipForPlayer) Customs = InterPrints.Customitation();
+            while(true)
+            {
+            (int CountChip, int LinkedValues, int countPlayer, int maxNumChip, int ChipForPlayer, int GameType) Customs = InterPrints.Customitation();
             //Aqui se construye el juego segun las respuestas del usuario
+                TypeGame typeGame = (TypeGame)Customs.GameType;
                 switch (typeGame)
                 {
                     case TypeGame.ClasicDominos:
-                        {
-                            List<Player<Numeric, int>> players = new();
-                            ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
-
-
-                            for (int i = 0; i < countPlayer; i++)
-                            {
-                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type",0, typePlayer.Count);
-                                InterPrints.AddPlayer(players, selectTypePlayer, i);
-                            }
-                            IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                            IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                            Rules<Numeric, int> rules = new(winConditions, finalConditions);
-                            ClassicGameLogic<Numeric, int> gameLogic = new(countLinkedValues, rules, Values.ValuesNumerics, players);
+                        { 
+                            IWinCondition<Numeric,int>[] winConditions =  {new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>()};
+                            IEndCondition<Numeric,int>[] finalConditions =  { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                            (Rules<Numeric,int> Rules,List<Player<Numeric,int>> Players ) rulesAndPlayer = CustomPlayerAndRules(Customs.countPlayer,winConditions,finalConditions);
+                            ClassicGameLogic<Numeric, int> ClasicDominos = new(Customs.LinkedValues,rulesAndPlayer.Rules, Values.ValuesNumerics,rulesAndPlayer.Players);
                             //Echa a andar el juego
-                            NewGame<Numeric, int>(gameLogic, numChipForPlayer);
+                            NewGame<Numeric, int>(ClasicDominos,Customs.ChipForPlayer);
                             break;
                         }
                     case TypeGame.PrittyBoy:
                         {
-                            List<Player<Emojis, string>> emoplayer = new();
-                            ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
-                            for (int i = 0; i < countPlayer; i++)
-                            {
-                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type",0, typePlayer.Count);
-                                InterPrints.AddPlayer(emoplayer, selectTypePlayer, i);
-                            }
+
                             IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
                             IEndCondition<Emojis, string>[] finalConditions = { new IsLocked<Emojis, string>(), new PlayAllChips<Emojis, string>() };
-                            Rules<Emojis, string> rules = new(winConditions, finalConditions);
-                            ClassicGameLogic<Emojis, string> gameLogic = new(countLinkedValues, rules, Values.ValuesEmojis, emoplayer);
-
-                            NewGame<Emojis, string>(gameLogic, numChipForPlayer);
+                            (Rules<Emojis, string> Rules,List<Player<Emojis, string>> Players ) rulesAndPlayer = CustomPlayerAndRules(Customs.countPlayer,winConditions,finalConditions);
+                            ClassicGameLogic<Emojis, string> PrittyBoy = new(Customs.LinkedValues,rulesAndPlayer.Rules, Values.ValuesEmojis,rulesAndPlayer.Players);
+                            //Echa a andar el juego
+                            NewGame<Emojis, string>(PrittyBoy,Customs.ChipForPlayer);
                             break;
                         }
                     case TypeGame.Stolen:
                         {
-                            List<Player<Numeric, int>> players = new();
-                            ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
-                            for (int i = 0; i < countPlayer; i++)
-                            {
-                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type",0, typePlayer.Count);
-                                InterPrints.AddPlayer(players, selectTypePlayer, i);
-                            }
-                            IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                               IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                             IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                            Rules<Numeric, int> rules = new(winConditions, finalConditions);
-                            StolenLogic<Numeric, int> gameLogic = new StolenLogic<Numeric, int>(countLinkedValues, rules, Values.ValuesNumerics, players);
-
-                            NewGame<Numeric, int>(gameLogic, numChipForPlayer);
+                                (Rules<Numeric,int> Rules,List<Player<Numeric,int>> Players ) rulesAndPlayer = CustomPlayerAndRules(Customs.countPlayer,winConditions,finalConditions);
+                            StolenLogic<Numeric, int> Stolen = new(Customs.LinkedValues,rulesAndPlayer.Rules, Values.ValuesNumerics,rulesAndPlayer.Players);
+                            //Echa a andar el juego
+                            NewGame<Numeric, int>(Stolen,Customs.ChipForPlayer);
                             break;
                         }
                 }
@@ -77,7 +58,20 @@ namespace VisualDominoes
                 int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar?",0, 2);
                 if(key == 1) return;
             }
+        }
+        public (Rules<TValue,T>,List<Player<TValue,T>>) CustomPlayerAndRules<TValue, T> (int countPlayer,IWinCondition<TValue,T>[] winConditions,IEndCondition<TValue,T>[] finalConditions) where TValue : IValue<T>,IRankable
+        {
+                            List<Player<TValue,T>> players = new();
+                            ICollection<string> typePlayer = Enum.GetNames(typeof(TypePlayer));
 
+
+                            for (int i = 0; i <countPlayer; i++)
+                            {
+                                int selectTypePlayer = InterPrints.PrintSelect(typePlayer, "Player type",0, typePlayer.Count);
+                                InterPrints.AddPlayer(players, selectTypePlayer, i);
+                            }
+                            Rules<TValue,T> rules = new(winConditions, finalConditions);
+                            return (rules,players);
         }
         public void NewGame<TValue, T>(IGameLogic<TValue, T> Game, int numChipPlayer) where TValue : IValue<T>
         {
@@ -135,89 +129,6 @@ namespace VisualDominoes
             Console.ReadKey();
             Console.Clear();
         }
-
-        public bool AskHumanNextPlay(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) value)
-        {
-            bool canPlay = false;
-            int pos;
-            Chip<TValue, T> move;
-            // Primero verifica si hay fichas en el tablero
-            if (board.CountChip != 0)
-            {
-                // Aqui guardo en una variable booleana si existen jugadas validas
-                canPlay = player.CanPlay(board, rules);
-                // si no existe devuelve false directamente
-                if (!canPlay)
-                {
-                    value = default((Chip<TValue, T>, TValue));
-                    return canPlay;
-                }
-                bool IsValidMove;
-                do
-                {
-                    bool isNumeric;
-                    do
-                    {
-                        // Pegunta al usuario por la ficha que desea jugar
-                        Console.WriteLine("Chouse a number between 0 and " + (player.NumChips - 1) + " dependig of the position of the chip you wanna play");
-                        // Si la respuesta no es numerica guarda false en IsNumeric para volver a preguntar por la ficha que desea jugar
-                        isNumeric = int.TryParse(Console.ReadLine(), out pos);
-                        if (!isNumeric) Console.WriteLine("String is not a numeric representation");
-                    } while (!isNumeric || (pos >= player.NumChips || pos < 0));
-                    // Guarda la posision dada luego de sabe que es una posision valida
-                    move = player.GetChipInPos(pos);
-                    // Revisa que la ficha pueda jugarse correctamente, de lo contrario se repite el ciclo
-                    IsValidMove = rules.PlayIsValid(move, board.GetLinkL) || rules.PlayIsValid(move, board.GetLinkR);
-                    if (!IsValidMove) Console.WriteLine("Is not valid");
-                } while (!IsValidMove);
-
-                bool ValidMoveRight = rules.PlayIsValid(move, board.GetLinkR);
-                bool ValidMoveLeft = rules.PlayIsValid(move, board.GetLinkL);
-                // valido por ambos lados
-                if (ValidMoveRight && ValidMoveLeft)
-                {
-                    Console.WriteLine("Press booton <-- if you wanna paly in the Left side or --> in the Rigth side");
-                    ConsoleKey key = new ConsoleKey();
-                    do
-                    {
-                        key = Console.ReadKey().Key;
-                        if (key == ConsoleKey.RightArrow)
-                        {
-                            value = (move, board.GetLinkR);
-                            return true;
-                        }
-                        if (key == ConsoleKey.LeftArrow)
-                        {
-                            value = (move, board.GetLinkL);
-                            return true;
-                        }
-                    } while (key != ConsoleKey.LeftArrow && key != ConsoleKey.RightArrow);
-                }
-                // Se puede jugar por la derecha
-                if (ValidMoveRight)
-                {
-                    value = (move, board.GetLinkR);
-                    return true;
-                }
-                // Se puede jugar por la Isquierda
-                value = (move, board.GetLinkL);
-                return true;
-            }
-            // esto es en el caso de que sea la primera jugada
-            else
-            {
-                bool isNumeric;
-                do
-                {
-                    Console.WriteLine("Chouse a number between 0 and " + (player.NumChips-1) + " dependig of the position of the chip you wanna play");
-                    isNumeric = int.TryParse(Console.ReadLine(), out pos);
-                    if (!isNumeric) Console.WriteLine("String is not a numeric representation");
-                } while (!isNumeric || (pos >= player.NumChips || pos < 0));
-                value = (player.GetChipInPos(pos), default(TValue));
-                return true;
-            }
-        }
-
-
+      
     }
 }

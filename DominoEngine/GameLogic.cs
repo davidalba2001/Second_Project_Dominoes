@@ -111,6 +111,12 @@ namespace DominoEngine
                 if (Rules.IsTurnToPlay(Turn, Players.Count, player.PlayerOrder))
                 {
                     CurrentPlayer = player;
+                    while(!CurrentPlayer.CanPlay(board, Rules))
+                    {
+                        if(Chips.Count==0) break;
+                        CurrentPlayer.TakeChip(Chips[0]);
+                        Chips.Remove(Chips[0]);
+                    }
                 }
             }
         }
@@ -118,16 +124,11 @@ namespace DominoEngine
         public void CurrentTurn()
         {
             (Chip<TValue, T>, TValue) move = new();
-            while (!CurrentPlayer.NextPlay(board, Rules, out move))
+            if(!CurrentPlayer.NextPlay(board, Rules, out move)&&(Chips.Count == 0))
             {
-                if (Chips.Count == 0)
-                {
-                    CurrentPlayer.Pass = true;
-                    Turn++;
-                    return;
-                }
-                CurrentPlayer.TakeChip(Chips[0]);
-                Chips.Remove(Chips[0]);
+                CurrentPlayer.Pass = true;
+                Turn++;
+                return;
             }
             CurrentPlayer.PlayChip(move.Item1);
             board.AddChip(move);
