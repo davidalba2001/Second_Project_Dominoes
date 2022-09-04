@@ -71,7 +71,7 @@ namespace DominoEngine
             CurrentPlayer = null;
         }
         public void CurrentTurn()
-        {
+        { 
             bool canPlay = CurrentPlayer.NextPlay(board, Rules, out (Chip<TValue, T>, TValue) playerMove);
             if (canPlay)
             {
@@ -104,6 +104,8 @@ namespace DominoEngine
             Chips = Rules.GenerateChips(countLinkedValues, linkedValues);
             this.CurrentPlayer = Players[0];
         }
+        // Al igual que en el clasico, busca el jugador que le toca jugar, y en caso de no llevar
+        // roba fichas hasta que lleve
         public void ChangeValidCurrentPlayer()
         {
             foreach (var player in Players)
@@ -120,10 +122,11 @@ namespace DominoEngine
                 }
             }
         }
-
+       
         public void CurrentTurn()
         {
             (Chip<TValue, T>, TValue) move = new();
+             // Si luego de que no queden fichas por robar, aun no puede jugar, juega el otro jugador
             if(!CurrentPlayer.NextPlay(board, Rules, out move)&&(Chips.Count == 0))
             {
                 CurrentPlayer.Pass = true;

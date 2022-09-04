@@ -15,8 +15,8 @@ namespace VisualDominoes
             InterPrints.Front();
             while(true)
             {
-            (int CountChip, int LinkedValues, int countPlayer, int maxNumChip, int ChipForPlayer, int GameType) Customs = InterPrints.Customitation();
-            //Aqui se construye el juego segun las respuestas del usuario
+                (int CountChip, int LinkedValues, int countPlayer, int maxNumChip, int ChipForPlayer, int GameType) Customs = InterPrints.Customitation();
+                //Aqui se construye el juego segun las respuestas del usuario
                 TypeGame typeGame = (TypeGame)Customs.GameType;
                 switch (typeGame)
                 {
@@ -24,7 +24,10 @@ namespace VisualDominoes
                         { 
                             IWinCondition<Numeric,int>[] winConditions =  {new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>()};
                             IEndCondition<Numeric,int>[] finalConditions =  { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                            // Aqui se construyen las Reglas Segun las respuestas del usuario                            
                             (Rules<Numeric,int> Rules,List<Player<Numeric,int>> Players ) rulesAndPlayer = CustomPlayerAndRules(Customs.countPlayer,winConditions,finalConditions);
+                            // Aqui se construye la logica del juego usando las reglas
+                            // en este caso es un juego clasico de domino
                             ClassicGameLogic<Numeric, int> ClasicDominos = new(Customs.LinkedValues,rulesAndPlayer.Rules, Values.ValuesNumerics,rulesAndPlayer.Players);
                             //Echa a andar el juego
                             NewGame<Numeric, int>(ClasicDominos,Customs.ChipForPlayer);
@@ -32,7 +35,7 @@ namespace VisualDominoes
                         }
                     case TypeGame.PrittyBoy:
                         {
-
+                            // Domino clasico con emojis
                             IWinCondition<Emojis, string>[] winConditions = { new WinnerByChips<Emojis, string>(), new PlayAllChips<Emojis, string>() };
                             IEndCondition<Emojis, string>[] finalConditions = { new IsLocked<Emojis, string>(), new PlayAllChips<Emojis, string>() };
                             (Rules<Emojis, string> Rules,List<Player<Emojis, string>> Players ) rulesAndPlayer = CustomPlayerAndRules(Customs.countPlayer,winConditions,finalConditions);
@@ -43,9 +46,11 @@ namespace VisualDominoes
                         }
                     case TypeGame.Stolen:
                         {
-                               IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
+                            // Variante del "Robado"
+                            IWinCondition<Numeric, int>[] winConditions = { new WinnerByPuntos<Numeric, int>(), new PlayAllChips<Numeric, int>() };
                             IEndCondition<Numeric, int>[] finalConditions = { new IsLocked<Numeric, int>(), new PlayAllChips<Numeric, int>() };
-                                (Rules<Numeric,int> Rules,List<Player<Numeric,int>> Players ) rulesAndPlayer = CustomPlayerAndRules(Customs.countPlayer,winConditions,finalConditions);
+                            
+                            (Rules<Numeric,int> Rules,List<Player<Numeric,int>> Players ) rulesAndPlayer = CustomPlayerAndRules(Customs.countPlayer,winConditions,finalConditions);
                             StolenLogic<Numeric, int> Stolen = new(Customs.LinkedValues,rulesAndPlayer.Rules, Values.ValuesNumerics,rulesAndPlayer.Players);
                             //Echa a andar el juego
                             NewGame<Numeric, int>(Stolen,Customs.ChipForPlayer);
@@ -59,6 +64,7 @@ namespace VisualDominoes
                 if(key == 1) return;
             }
         }
+        // Metodo que construye las reglas
         public (Rules<TValue,T>,List<Player<TValue,T>>) CustomPlayerAndRules<TValue, T> (int countPlayer,IWinCondition<TValue,T>[] winConditions,IEndCondition<TValue,T>[] finalConditions) where TValue : IValue<T>,IRankable
         {
                             List<Player<TValue,T>> players = new();
@@ -72,7 +78,7 @@ namespace VisualDominoes
                             }
                             Rules<TValue,T> rules = new(winConditions, finalConditions);
                             return (rules,players);
-        }
+        }       
         public void NewGame<TValue, T>(IGameLogic<TValue, T> Game, int numChipPlayer) where TValue : IValue<T>
         {
 

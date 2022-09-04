@@ -72,6 +72,7 @@ namespace DominoEngine
             return chips;
         }
          // Encapsula la estrategia del jugador
+         // Si el jugador puede jugar devuelve true, y en el out la jugada, y false en el caso de que no pueda jugar
         public bool NextPlay(Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) move)
         {
             return Strategy.ValidMove(this,board, rules, out move);

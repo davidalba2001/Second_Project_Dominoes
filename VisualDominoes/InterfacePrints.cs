@@ -245,12 +245,12 @@ namespace VisualDominoes
                 ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
                 selectGameType = InterPrints.PrintSelect(typesGames, "Game type", 0, typesGames.Count);
                 
-
+            // Las respuestas se devuelven para ser usadas en el constructor del juego
             return (selectCountChip, countLinkedValues, countPlayer, maxNumChip, numChipForPlayer, selectGameType);
             //--------------------------------------------------------------------------------------------------------
         }
-
-          public static bool AskNextPlay<TValue, T>(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) value)where TValue : IValue<T>
+        // Metodo que define como va a interactuar el usuario como jugador con la consola
+        public static bool AskNextPlay<TValue, T>(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) value)where TValue : IValue<T>
         {
             bool canPlay = false;
             int pos;

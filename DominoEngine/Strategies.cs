@@ -9,22 +9,18 @@ namespace DominoEngine
 {
     public class HumanStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
     {
+        // En este deleagdo se adapta la forma en la que el usuario como jugador interactua 
         private AskHumanNextPlay<TValue, T> Play;
+        // En el constructor se define el delegado
         public HumanStrategies(AskHumanNextPlay<TValue, T> move)
         {
             Play = move;
         }
-
         public bool ValidMove(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) value)
         {
             return Play(player, board, rules, out value);
         }
     }
-
-
-
-
-
 
     public class RandomStrategies<TValue, T> : IStrategy<TValue, T> where TValue : IValue<T>
     {
@@ -119,6 +115,7 @@ namespace DominoEngine
             move = Moves.OrderByDescending(item => item.Score).ToList()[0].Move;
             return true;
         }
+        // Actualiza la lista de caras con mayor frecuencia segun la mano actual
         private void GetBestData(List<Chip<TValue,T>> Hand)
         {
             int cant = 0;
@@ -162,6 +159,7 @@ namespace DominoEngine
             yield return Chip.LinkL;
             yield return Chip.LinkR;
         }
+        // Se le otorga valor a todas las jugadas validas posibles
         private IEnumerable<MoveWeighter> GetRankedValidMoves(List<Chip<TValue,T>> ValidMoves, Board<TValue,T> board)
         {
             foreach(var move in ValidMoves)
@@ -170,13 +168,14 @@ namespace DominoEngine
                 if(Rules.PlayIsValid(move, board.GetLinkR)) yield return new MoveWeighter((move,board.GetLinkR),GetScore((move,board.GetLinkR),board));
             }
         } 
+        // Se le otorga un score a la jugada basado en euristica
         private double GetScore((Chip<TValue,T>, TValue) Move, Board<TValue,T> board)
         {
             double Score = 0;
             int Frquence = AmountOfChips(Move.Item1.LinkL,Hand)+ AmountOfChips(Move.Item1.LinkR,Hand);
             Score += (double)Frquence/100;
             if(board.CountChip == 0) return Score;
-            if(Move.Item2.Equals(BestData)) Score = Score-1;
+            if(BestData.Contains(Move.Item2)) Score = Score-1;
             if(BestData.Contains(DifrentFace((Move.Item1.LinkL,Move.Item1.LinkR),Move.Item2))
             &&  BestData.Contains(DifrentFace((board.GetLinkL,board.GetLinkR),Move.Item2))) Score = Score + 1;
             return Score;
