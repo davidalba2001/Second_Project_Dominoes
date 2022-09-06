@@ -27,32 +27,34 @@
     ]
   },
   "packageFolders": {
-    "/home/davidalba/.nuget/packages/": {}
+    "C:\\Users\\davidalba\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/VisualDominoes.csproj",
+      "projectUniqueName": "D:\\WorkSpace\\Projects\\Second_Project_Dominoes\\VisualDominoes\\VisualDominoes.csproj",
       "projectName": "VisualDominoes",
-      "projectPath": "/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/VisualDominoes.csproj",
-      "packagesPath": "/home/davidalba/.nuget/packages/",
-      "outputPath": "/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/VisualDominoes/obj/",
+      "projectPath": "D:\\WorkSpace\\Projects\\Second_Project_Dominoes\\VisualDominoes\\VisualDominoes.csproj",
+      "packagesPath": "C:\\Users\\davidalba\\.nuget\\packages\\",
+      "outputPath": "D:\\WorkSpace\\Projects\\Second_Project_Dominoes\\VisualDominoes\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/davidalba/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\davidalba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/DominoEngine.csproj": {
-              "projectPath": "/media/davidalba/c6c08c4e-f18e-476c-bf01-7e8a98a810f7/vscode/Second_Project_Dominoes/DominoEngine/DominoEngine.csproj"
+            "D:\\WorkSpace\\Projects\\Second_Project_Dominoes\\DominoEngine\\DominoEngine.csproj": {
+              "projectPath": "D:\\WorkSpace\\Projects\\Second_Project_Dominoes\\DominoEngine\\DominoEngine.csproj"
             }
           }
         }
@@ -72,7 +74,8 @@
           "net47",
           "net471",
           "net472",
-          "net48"
+          "net48",
+          "net481"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -81,7 +84,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.301/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }

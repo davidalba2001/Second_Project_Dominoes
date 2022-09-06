@@ -29,7 +29,6 @@ namespace DominoEngine
         }
         public void HandOutChips(int CountChip)
         {
-            //TODO:corregir los indices porque pueden haber mas fichas a asignar que las disponibles
             Random var = new Random();
             List<Chip<TValue, T>> Randomized = Chips.OrderBy(Item => var.Next()).ToList<Chip<TValue, T>>();
             for (int i = 0; i < Players.Count; i++)

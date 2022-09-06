@@ -4,6 +4,9 @@ using DominoEngine.Interfaces;
 
 namespace VisualDominoes
 {
+
+    public delegate bool AskHumanNextPlay(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules,
+        out (Chip<TValue, T>, TValue) value);
     // Opciones de la versión
     enum VersionDomioes
     {

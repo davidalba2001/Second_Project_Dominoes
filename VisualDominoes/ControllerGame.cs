@@ -88,8 +88,8 @@ namespace VisualDominoes
                             break;
                         }
                 }
+                //------------------------------------------------------------------------------------------------------
                 //--------------------------------------------------------------------------------------------------------
-                //--------------------------------------------------------------------------------------------------------
                 //Cuando termina el juego se le pregunta al usuario si desea jugar de nuevo
                 int key = InterPrints.PrintSelect(new string[] {"New Game","Exit" }, "Desea Continuar?",0, 2);
                 if(key == 1) return;
@@ -111,9 +111,9 @@ namespace VisualDominoes
                 {
                     break;
                 }
-                //-----------------------------------------------------------------------------------------
-                //-----------------------------------------------------------------------------------------
-                //Bloque de impresiones
+                //-------------------------------------------------------------------------------------
+                //-------------------------------------------------------------------------------------
+                /// //Bloque de impresiones
                 InterPrints.PrintGame(Game);
                 InterPrints.PrintHand(Game.CurrentPlayer.GetHand());
                 Console.WriteLine("\n");
@@ -127,8 +127,8 @@ namespace VisualDominoes
                 }
                 Console.WriteLine("---------------------------------------------------------------------");
                 Console.WriteLine("---------------------------------------------------------------------");
+                //-------------------------------------------------------------------------------------
                 //-----------------------------------------------------------------------------------------
-                //-----------------------------------------------------------------------------------------
                 //ejecuta todo lo que pasa en un turno
                 Game.CurrentTurn();
                 Console.ReadKey();
@@ -152,5 +152,89 @@ namespace VisualDominoes
             Console.ReadKey();
             Console.Clear();
         }
+
+        public bool AskHumanNextPlay(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules, out (Chip<TValue, T>, TValue) value)
+        {
+            bool canPlay = false;
+            int pos;
+            Chip<TValue, T> move;
+            // Primero verifica si hay fichas en el tablero
+            if (board.CountChip != 0)
+            {
+                // Aqui guardo en una variable booleana si existen jugadas validas
+                canPlay = player.CanPlay(board, rules);
+                // si no existe devuelve false directamente
+                if (!canPlay)
+                {
+                    value = default((Chip<TValue, T>, TValue));
+                    return canPlay;
+                }
+                bool IsValidMove;
+                do
+                {
+                    bool isNumeric;
+                    do
+                    {
+                        // Pegunta al usuario por la ficha que desea jugar
+                        Console.WriteLine("Chouse a number between 0 and " + (player.NumChips - 1) + " dependig of the position of the chip you wanna play");
+                        // Si la respuesta no es numerica guarda false en IsNumeric para volver a preguntar por la ficha que desea jugar
+                        isNumeric = int.TryParse(Console.ReadLine(), out pos);
+                        if (!isNumeric) Console.WriteLine("String is not a numeric representation");
+                    } while (!isNumeric || (pos >= player.NumChips || pos < 0));
+                    // Guarda la posision dada luego de sabe que es una posision valida
+                    move = player.GetChipInPos(pos);
+                    // Revisa que la ficha pueda jugarse correctamente, de lo contrario se repite el ciclo
+                    IsValidMove = rules.PlayIsValid(move, board.GetLinkL) || rules.PlayIsValid(move, board.GetLinkR);
+                    if (!IsValidMove) Console.WriteLine("Is not valid");
+                } while (!IsValidMove);
+
+                bool ValidMoveRight = rules.PlayIsValid(move, board.GetLinkR);
+                bool ValidMoveLeft = rules.PlayIsValid(move, board.GetLinkL);
+                // valido por ambos lados
+                if (ValidMoveRight && ValidMoveLeft)
+                {
+                    Console.WriteLine("Press booton <-- if you wanna paly in the Left side or --> in the Rigth side");
+                    ConsoleKey key = new ConsoleKey();
+                    do
+                    {
+                        key = Console.ReadKey().Key;
+                        if (key == ConsoleKey.RightArrow)
+                        {
+                            value = (move, board.GetLinkR);
+                            return true;
+                        }
+                        if (key == ConsoleKey.LeftArrow)
+                        {
+                            value = (move, board.GetLinkL);
+                            return true;
+                        }
+                    } while (key != ConsoleKey.LeftArrow && key != ConsoleKey.RightArrow);
+                }
+                // Se puede jugar por la derecha
+                if (ValidMoveRight)
+                {
+                    value = (move, board.GetLinkR);
+                    return true;
+                }
+                // Se puede jugar por la Isquierda
+                value = (move, board.GetLinkL);
+                return true;
+            }
+            // esto es en el caso de que sea la primera jugada
+            else
+            {
+                bool isNumeric;
+                do
+                {
+                    Console.WriteLine("Chouse a number between 0 and " + (player.NumChips-1) + " dependig of the position of the chip you wanna play");
+                    isNumeric = int.TryParse(Console.ReadLine(), out pos);
+                    if (!isNumeric) Console.WriteLine("String is not a numeric representation");
+                } while (!isNumeric || (pos >= player.NumChips || pos < 0));
+                value = (player.GetChipInPos(pos), default(TValue));
+                return true;
+            }
+        }
+
+
     }
 }
