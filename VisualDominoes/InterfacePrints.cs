@@ -4,9 +4,6 @@ using DominoEngine.Interfaces;
 
 namespace VisualDominoes
 {
-
-    public delegate bool AskHumanNextPlay(Player<TValue, T> player, Board<TValue, T> board, Rules<TValue, T> rules,
-        out (Chip<TValue, T>, TValue) value);
     // Opciones de la versión
     enum VersionDomioes
     {
@@ -151,7 +148,6 @@ namespace VisualDominoes
         // Según la opción elegida permite tomar el numero de caras del domino
         public static int VersionChips(int select)
         {
-
             VersionDomioes version = (VersionDomioes)select;
             switch (version)
             {
@@ -219,6 +215,41 @@ namespace VisualDominoes
             Console.WriteLine("Player Turn: " + Game.CurrentPlayer.Name);
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Red;
+        }
+
+        public static (int CountChip, int LinkedValues, int countPlayer, int maxNumChip, int ChipForPlayer) Customitation()
+        {
+            int selectCountChip;
+            int countLinkedValues;
+            int countPlayer;
+            int maxNumChip;
+            int numChipForPlayer;
+            while (true)
+            {
+                //--------------------------------------------------------------------------------------------------------
+                //--------------------------------------------------------------------------------------------------------
+                //Bloque de construcción del juego
+                //Aqui se le pregunta al usuario por preferencias de juego guardando las respuestas
+                ICollection<string> versionDominoes = Enum.GetNames(typeof(VersionDomioes));
+                 selectCountChip=
+                    InterPrints.PrintSelect(versionDominoes, "Domino Version", 0, versionDominoes.Count);
+
+                countLinkedValues = InterPrints.VersionChips(selectCountChip);
+
+                countPlayer =
+                    InterPrints.PrintSelect(new List<string>(), "Amount of players", 1, countLinkedValues);
+
+                maxNumChip = ((countLinkedValues * (countLinkedValues + 1)) / 2) / countPlayer;
+                numChipForPlayer =
+                    InterPrints.PrintSelect(new List<string>(), "Amount of chips in hand", 1, maxNumChip + 1);
+
+                ICollection<string> typesGames = Enum.GetNames(typeof(TypeGame));
+                int selectTypeGame = InterPrints.PrintSelect(typesGames, "Game type", 0, typesGames.Count);
+                TypeGame typeGame = (TypeGame)selectTypeGame;
+            }
+
+            return (selectCountChip, countLinkedValues, countPlayer, maxNumChip, numChipForPlayer);
+            //--------------------------------------------------------------------------------------------------------
         }
     }
 }
